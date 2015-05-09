@@ -25,10 +25,7 @@ Examine the unsecured personal loans (upl) data.
 A> {linenos=off}
 ```r
 str(upl, vec.len=3)
-```
-
-A> {linenos=off}
-```r
+\n
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : num  0 0 0 1 NA 0 1 0 ...
  $ age                : num  38.3 40.3 21.7 37.5 ...
@@ -56,7 +53,7 @@ All variables are coded as numeric. We know the response variable is in fact a b
 
 A> {linenos=off}
 ```r
-> upl$bad = as.factor(upl$bad)
+upl$bad = as.factor(upl$bad)
 ```
 
 We also need to change the following predictors to factors. But first, we change them to characters and check missing values.
@@ -71,7 +68,8 @@ for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 
 A> {linenos=off}
 ```
-> str(upl[, iv_cat], vec.len=3) 
+str(upl[, iv_cat], vec.len=3) 
+\n
 'data.frame':	7250 obs. of  10 variables:
  $ bankruptcy         : chr  "0" "0" "0" ...
  $ purpose            : chr  "0" "0" "0" ...
