@@ -2,6 +2,14 @@
 
 Install and load the following packages.
 
+A> 
+```r
+install.packages("devtools")
+devtools::install_github("gmlang/ezplot")
+devtools::install_github("gmlang/loans")
+library(ezplot)
+library(loans)
+```
 
 A> {linenos=off, lang=r}
 ~~~~~~~~
@@ -14,24 +22,21 @@ library(loans)
 
 Create a directory called *score-loan-applicants* under your home directory. Set it as the working directory where we'll run the analysis. 
 
-{linenos=off, lang=r}
+A> {linenos=off, lang=r}
 ~~~~~~~~
-> proj_path = "~/score-loan-applicants"
-> dir.create(proj_path, showWarnings=FALSE)
-> setwd(proj_path)
+proj_path = "~/score-loan-applicants"
+dir.create(proj_path, showWarnings=FALSE)
+setwd(proj_path)
 ~~~~~~~~
 
 You can check your working directory by running `getwd()`. 
 
 Examine the unsecured personal loans (upl) data.
 
-{linenos=off, lang=r}
-~~~~~~~~
-str(upl)
-~~~~~~~~
 
 A> {linenos=off, lang=r}
 ~~~~~~~~
+str(upl)
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : Factor w/ 3 levels "0","1","unknown": 1 1 1 2 3 1 2 1 1 1 ...
  $ age                : num  38.3 40.3 21.7 37.5 43.8 ...
