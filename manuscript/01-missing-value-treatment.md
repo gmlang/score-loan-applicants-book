@@ -26,6 +26,7 @@ A> {linenos=off}
 ```r
 str(upl, vec.len=3)  
 ```
+
 {linenos=off}
 ```r
 'data.frame':	7250 obs. of  17 variables:
@@ -69,8 +70,11 @@ for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 ```
 
 A> {linenos=off}
-```
+```r
 str(upl[, iv_cat], vec.len=3)  
+```
+{linenos=off}
+```r
 'data.frame':	7250 obs. of  10 variables:
  $ bankruptcy         : chr  "0" "0" "0" ...
  $ purpose            : chr  "0" "0" "0" ...
