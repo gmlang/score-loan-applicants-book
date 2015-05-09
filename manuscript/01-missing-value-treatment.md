@@ -1,3 +1,4 @@
+
 Install and load the following packages.
 
 ```r
@@ -128,7 +129,8 @@ p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
 print(p)
 ```
 
-![plot of chunk target](images/target-1.png) 
+![plot of chunk target](figure/target-1.png) 
+
 Explore the relationship between missing values and the target
 
 Bankruptcy has few missings (< 4%), Purpose has heavy missings (> 15%), Debt_to_Income has few missings (~ 6%), and Market_Value has 9% missings
@@ -183,13 +185,13 @@ for (var in varsNA) {
 }
 ```
 
-![plot of chunk target_in_missing](images/target_in_missing-1.png) 
+![plot of chunk target_in_missing](figure/target_in_missing-1.png) 
 
-![plot of chunk target_in_missing](images/target_in_missing-2.png) 
+![plot of chunk target_in_missing](figure/target_in_missing-2.png) 
 
-![plot of chunk target_in_missing](images/target_in_missing-3.png) 
+![plot of chunk target_in_missing](figure/target_in_missing-3.png) 
 
-![plot of chunk target_in_missing](images/target_in_missing-4.png) 
+![plot of chunk target_in_missing](figure/target_in_missing-4.png) 
 
 
 Deal with missing values.
