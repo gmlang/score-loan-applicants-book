@@ -16,12 +16,9 @@ Create a directory called *score-loan-applicants* under your home directory. Set
 proj_path = "~/score-loan-applicants"
 dir.create(proj_path, showWarnings=FALSE)
 setwd(proj_path)
-getwd()
 ```
 
-```
-[1] "/Users/gmlang/score-loan-applicants"
-```
+You can check your working directory by running `getwd()`. 
 
 Examine the unsecured personal loans (upl) data.
 
@@ -53,46 +50,18 @@ str(upl)
 
 We see the data contains 7250 observations and 17 variables. You can find out the definitions of the variables by typing `?upl` in R.
 
-Check variable types and make changes if necessary
+All variables are coded as numeric. We need to change the following variables to factors. But first, we change them to characters and check missing values.
 
 ```r
-str(upl) # all vars are numeric
-```
-
-```
-'data.frame':	7250 obs. of  17 variables:
- $ purpose            : Factor w/ 3 levels "0","1","unknown": 1 1 1 2 3 1 2 1 1 1 ...
- $ age                : num  38.3 40.3 21.7 37.5 43.8 ...
- $ marital            : Factor w/ 2 levels "0","1": 1 2 1 2 1 1 1 2 2 2 ...
- $ employment         : Factor w/ 6 levels "1","2","3","4",..: 1 1 1 3 2 1 5 1 1 1 ...
- $ annual_income      : num  225523 93072 66236 45626 79104 ...
- $ debt_to_income     : num  0.393 0.357 0.868 1.574 1.167 ...
- $ market_value       : num  1540881 1159186 0 1069064 582007 ...
- $ own_property       : Factor w/ 2 levels "0","1": 2 2 1 2 2 1 1 2 2 2 ...
- $ late_repayments    : Factor w/ 2 levels "0","1": 1 1 1 2 2 1 2 1 1 1 ...
- $ repossess          : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 2 1 1 ...
- $ conviction         : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
- $ bankruptcy         : Factor w/ 3 levels "0","1","unknown": 1 1 1 1 1 1 1 1 1 1 ...
- $ unspent_convictions: Factor w/ 2 levels "0","1": 2 1 1 1 1 1 1 1 1 1 ...
- $ credit_applications: num  2 2 3 7 3 4 4 2 2 2 ...
- $ credit_line_age    : num  77.5 72.8 15.7 6.9 14 ...
- $ exist_customer     : Factor w/ 2 levels "0","1": 1 1 1 1 1 2 1 1 2 2 ...
- $ bad                : Factor w/ 2 levels "0","1": 1 1 1 2 2 2 1 1 1 1 ...
- - attr(*, "codepage")= int 65001
-```
-
-```r
-# the following predictors need to be coded as factors. Change them to characters first.
-iv_cat = c("Bankruptcy", "Purpose", "Exist_Customer", "Unspent_Convictions", 
-           "Conviction", "Repossess", "Own_Property", "Late_Repayments", 
-           "Marital", "Employment")
-iv_cat = tolower(iv_cat)
+iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions", 
+           "conviction", "repossess", "own_property", "late_repayments", 
+           "marital", "employment", "bad")
 for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 str(upl[, iv_cat])
 ```
 
 ```
-'data.frame':	7250 obs. of  10 variables:
+'data.frame':	7250 obs. of  11 variables:
  $ bankruptcy         : chr  "0" "0" "0" "0" ...
  $ purpose            : chr  "0" "0" "0" "1" ...
  $ exist_customer     : chr  "0" "0" "0" "0" ...
@@ -103,6 +72,7 @@ str(upl[, iv_cat])
  $ late_repayments    : chr  "0" "0" "0" "1" ...
  $ marital            : chr  "0" "1" "0" "1" ...
  $ employment         : chr  "1" "1" "1" "3" ...
+ $ bad                : chr  "0" "0" "0" "1" ...
 ```
 
 Check which variables have missing values.
@@ -156,7 +126,7 @@ pct_good_n_bad = function(dat, yvar, xvar = ""){
 
 ## END Define Function
 
-# change the target to factor, right now, it's coded as numeric
+# change the target to factor
 upl$bad = as.factor(upl$bad)
 
 # calculate the distribution of each level in target and plot it
