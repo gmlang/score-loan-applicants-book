@@ -11,31 +11,25 @@ library(ezplot)
 library(loans)
 ```
 
-A> {linenos=off, lang=r}
-~~~~~~~~
-install.packages("devtools")
-devtools::install_github("gmlang/ezplot")
-devtools::install_github("gmlang/loans")
-library(ezplot)
-library(loans)
-~~~~~~~~
-
 Create a directory called *score-loan-applicants* under your home directory. Set it as the working directory where we'll run the analysis. 
 
-A> {linenos=off, lang=r}
-~~~~~~~~
+A> {linenos=off}
+```r
 proj_path = "~/score-loan-applicants"
 dir.create(proj_path, showWarnings=FALSE)
 setwd(proj_path)
-~~~~~~~~
+```
 
 You can check your working directory by running `getwd()`. 
 
 Examine the unsecured personal loans (upl) data.
-`r str(upl)`
 
-A> {linenos=off, lang=r}
-~~~~~~~~
+```r 
+> str(upl)
+```
+
+A> {linenos=off}
+```r
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : Factor w/ 3 levels "0","1","unknown": 1 1 1 2 3 1 2 1 1 1 ...
  $ age                : num  38.3 40.3 21.7 37.5 43.8 ...
@@ -54,7 +48,7 @@ A> {linenos=off, lang=r}
  $ credit_line_age    : num  77.5 72.8 15.7 6.9 14 ...
  $ exist_customer     : Factor w/ 2 levels "0","1": 1 1 1 1 1 2 1 1 2 2 ...
  $ bad                : Factor w/ 2 levels "0","1": 1 1 1 2 2 2 1 1 1 1 ...
-~~~~~~~~
+```
 
 We see the data contains 7250 observations and 17 variables. You can find out the definitions of the variables by typing `?upl` in R.
 
