@@ -27,7 +27,7 @@ A> {linenos=off}
 str(upl, vec.len=3)  
 ```
 
-{linenos=off}
+A> {linenos=off}
 ```r
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : num  0 0 0 1 NA 0 1 0 ...
@@ -73,7 +73,8 @@ A> {linenos=off}
 ```r
 str(upl[, iv_cat], vec.len=3)  
 ```
-{linenos=off}
+
+A> {linenos=off}
 ```r
 'data.frame':	7250 obs. of  10 variables:
  $ bankruptcy         : chr  "0" "0" "0" ...
