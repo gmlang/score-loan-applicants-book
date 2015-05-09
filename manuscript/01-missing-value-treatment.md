@@ -9,7 +9,7 @@ y <- c(0, 0, 2, 0, 0)
 plot(x, y, lwd = 3,frame = FALSE, type = "l")
 ~~~~~~
 
-{linenos=off, lang=r}
+A> {linenos=off, lang=r}
 ~~~~~~~~
 install.packages("devtools")
 devtools::install_github("gmlang/ezplot")
@@ -21,23 +21,23 @@ library(loans)
 
 Create a directory called *score-loan-applicants* under your home directory. Set it as the working directory where we'll run the analysis. 
 
-{linenos=off}
+{linenos=off, lang=r}
 ~~~~~~~~
-proj_path = "~/score-loan-applicants"
-dir.create(proj_path, showWarnings=FALSE)
-setwd(proj_path)
+> proj_path = "~/score-loan-applicants"
+> dir.create(proj_path, showWarnings=FALSE)
+> setwd(proj_path)
 ~~~~~~~~
 
 You can check your working directory by running `getwd()`. 
 
 Examine the unsecured personal loans (upl) data.
 
-```r
+{linenos=off, lang=r}
+~~~~~~~~
 str(upl)
-```
+~~~~~~~~
 
-A>
-{linenos=off}
+A> {linenos=off, lang=r}
 ~~~~~~~~
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : Factor w/ 3 levels "0","1","unknown": 1 1 1 2 3 1 2 1 1 1 ...
