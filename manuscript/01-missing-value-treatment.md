@@ -24,6 +24,7 @@ You can check your working directory by running `getwd()`.
 
 Examine the unsecured personal loans (upl) data.
 
+{linenos=off}
 ```r 
 > str(upl)
 ```
@@ -54,6 +55,7 @@ We see the data contains 7250 observations and 17 variables. You can find out th
 
 All variables are coded as numeric. We need to change the following variables to factors. But first, we change them to characters and check missing values.
 
+A> {linenos=off}
 ```r
 iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions", 
            "conviction", "repossess", "own_property", "late_repayments", 
@@ -62,6 +64,7 @@ for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 str(upl[, iv_cat])
 ```
 
+A> {linenos=off}
 ```r
 'data.frame':	7250 obs. of  11 variables:
  $ bankruptcy         : chr  "0" "0" "0" "0" ...
@@ -79,6 +82,7 @@ str(upl[, iv_cat])
 
 Check which variables have missing values.
 
+A> {linenos=off}
 ```r
 n = nrow(upl) # count total number of observations
 vars = names(upl)
