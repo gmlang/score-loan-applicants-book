@@ -2,19 +2,12 @@
 
 Install and load the following packages.
 
-{title="Code for plotting the density", line-numbers=off,lang=r}
-~~~~~~
-x <- c(-0.5, 0, 1, 1, 1.5)
-y <- c(0, 0, 2, 0, 0)
-plot(x, y, lwd = 3,frame = FALSE, type = "l")
-~~~~~~
 
 A> {linenos=off, lang=r}
 ~~~~~~~~
 install.packages("devtools")
 devtools::install_github("gmlang/ezplot")
 devtools::install_github("gmlang/loans")
-
 library(ezplot)
 library(loans)
 ~~~~~~~~
@@ -71,7 +64,7 @@ for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 str(upl[, iv_cat])
 ```
 
-```
+```r
 'data.frame':	7250 obs. of  11 variables:
  $ bankruptcy         : chr  "0" "0" "0" "0" ...
  $ purpose            : chr  "0" "0" "0" "1" ...
