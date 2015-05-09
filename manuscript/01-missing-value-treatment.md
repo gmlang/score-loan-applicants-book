@@ -5,9 +5,9 @@ Install and load the following packages.
 
 A> {linenos=off}
 ```r
-# install.packages("devtools")
-# devtools::install_github("gmlang/ezplot")
-# devtools::install_github("gmlang/loans")
+install.packages("devtools")
+devtools::install_github("gmlang/ezplot")
+devtools::install_github("gmlang/loans")
 library(ezplot)
 library(loans)
 ```
@@ -22,13 +22,13 @@ dir.create(proj_path, showWarnings=FALSE)
 
 Examine the unsecured personal loans (upl) data.
 
-{linenos=off}
+A> {linenos=off}
 ```r
-> str(upl, vec.len=3)
+str(upl, vec.len=3)
 ```
 
-{linenos=off}
-```
+A> {linenos=off}
+```r
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : num  0 0 0 1 NA 0 1 0 ...
  $ age                : num  38.3 40.3 21.7 37.5 ...
@@ -54,7 +54,7 @@ We see the data contains 7250 observations and 17 variables. You can find out th
 
 All variables are coded as numeric. We know the response variable is in fact a binary indicator. We thus change it to factor.
 
-{linenos=off}
+A> {linenos=off}
 ```r
 > upl$bad = as.factor(upl$bad)
 ```
@@ -67,11 +67,11 @@ iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions",
            "conviction", "repossess", "own_property", "late_repayments", 
            "marital", "employment")
 for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
-str(upl[, iv_cat], vec.len=3)
 ```
 
 A> {linenos=off}
 ```
+> str(upl[, iv_cat], vec.len=3) 
 'data.frame':	7250 obs. of  10 variables:
  $ bankruptcy         : chr  "0" "0" "0" ...
  $ purpose            : chr  "0" "0" "0" ...
