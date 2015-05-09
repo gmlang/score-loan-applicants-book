@@ -30,6 +30,8 @@ str(upl)
 ```
 
 A>
+{linenos=off}
+~~~~~~~~
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : Factor w/ 3 levels "0","1","unknown": 1 1 1 2 3 1 2 1 1 1 ...
  $ age                : num  38.3 40.3 21.7 37.5 43.8 ...
@@ -48,7 +50,7 @@ A>
  $ credit_line_age    : num  77.5 72.8 15.7 6.9 14 ...
  $ exist_customer     : Factor w/ 2 levels "0","1": 1 1 1 1 1 2 1 1 2 2 ...
  $ bad                : Factor w/ 2 levels "0","1": 1 1 1 2 2 2 1 1 1 1 ...
-
+~~~~~~~~
 
 We see the data contains 7250 observations and 17 variables. You can find out the definitions of the variables by typing `?upl` in R.
 
