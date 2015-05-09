@@ -1,20 +1,9 @@
----
-title: "01-missing-value-treatment"
-author: "gmlang"
-date: "April 3, 2015"
-output: pdf_document
----
 
-
-```r
-library(knitr)
-opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
-               echo = TRUE, fig.width = 5, fig.height = 5, dev = 'png')
-options(width = 100, scipen = 5, digits = 5)
-```
+# 01-missing-value-treatment
 
 Install and load the following packages.
 
+A> {linenos=off}
 ```r
 # install.packages("devtools")
 # devtools::install_github("gmlang/ezplot")
@@ -25,6 +14,7 @@ library(loans)
 
 Create a directory called *score-loan-applicants* under your home directory. Use it as the project folder that will store all files related with our analysis, which include code, processed data, intermediate results, figures, and etc.
 
+A> {linenos=off}
 ```r
 proj_path = "~/score-loan-applicants"
 dir.create(proj_path, showWarnings=FALSE)
@@ -32,10 +22,12 @@ dir.create(proj_path, showWarnings=FALSE)
 
 Examine the unsecured personal loans (upl) data.
 
+{linenos=off}
 ```r
-str(upl, vec.len=3)
+> str(upl, vec.len=3)
 ```
 
+{linenos=off}
 ```
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : num  0 0 0 1 NA 0 1 0 ...
@@ -62,12 +54,14 @@ We see the data contains 7250 observations and 17 variables. You can find out th
 
 All variables are coded as numeric. We know the response variable is in fact a binary indicator. We thus change it to factor.
 
+{linenos=off}
 ```r
-upl$bad = as.factor(upl$bad)
+> upl$bad = as.factor(upl$bad)
 ```
 
 We also need to change the following predictors to factors. But first, we change them to characters and check missing values.
 
+A> {linenos=off}
 ```r
 iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions", 
            "conviction", "repossess", "own_property", "late_repayments", 
@@ -76,6 +70,7 @@ for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 str(upl[, iv_cat], vec.len=3)
 ```
 
+A> {linenos=off}
 ```
 'data.frame':	7250 obs. of  10 variables:
  $ bankruptcy         : chr  "0" "0" "0" ...
@@ -92,6 +87,7 @@ str(upl[, iv_cat], vec.len=3)
 
 Check which variables have missing values.
 
+A> {linenos=off}
 ```r
 n = nrow(upl) # count total number of observations
 vars = names(upl)
@@ -108,6 +104,7 @@ pct_missing = data.frame(vars=varsNA, percent_missing = pctNA)
 print(pct_missing)
 ```
 
+A> {linenos=off}
 ```
             vars percent_missing
 1        purpose          15.13%
@@ -120,6 +117,7 @@ Distribution of the target variable
 
 The data set contains 7250 observations, of which 82% are good customers while 18% are bad ones as shown below. The imbalanced distribution of the target variable implies that we can't merely use the overall classification accuracy to measure model performance. For example, suppose we build a model, and it gives us an accuracy of 82%. We wouldn't consider it to be a good model here because we can achieve the same 82% accuracy by simply predicting every observation as good without fitting any model. We want to build models that can correctly identify the bad customers. Therefore, we need to use more granular measures such as sensitivity and specificity to assess model performances. 
 
+A> {linenos=off}
 ```r
 ## BEGIN Define Function
 
@@ -143,12 +141,13 @@ p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
 print(p)
 ```
 
-![plot of chunk target](images/target-1.png) 
+![](images/target-1.png) 
 
 Explore the relationship between missing values and the target
 
 Bankruptcy has few missings (< 4%), Purpose has heavy missings (> 15%), Debt_to_Income has few missings (~ 6%), and Market_Value has 9% missings
 
+A> {linenos=off}
 ```r
 # # Bankruptcy has few missings (< 4%)
 # tbl = pct_good_n_bad(dat, "bad", "bankruptcy")
@@ -199,13 +198,13 @@ for (var in varsNA) {
 }
 ```
 
-![plot of chunk target_in_missing](images/target_in_missing-1.png) 
+![](images/target_in_missing-1.png) 
 
-![plot of chunk target_in_missing](images/target_in_missing-2.png) 
+![](images/target_in_missing-2.png) 
 
-![plot of chunk target_in_missing](images/target_in_missing-3.png) 
+![](images/target_in_missing-3.png) 
 
-![plot of chunk target_in_missing](images/target_in_missing-4.png) 
+![](images/target_in_missing-4.png) 
 
 
 Deal with missing values.
@@ -216,14 +215,17 @@ For continuous vars except market_value, fill the missing values with the grand 
 
 For market_value, because it measures similar info with own_property, we fill the missings in market_value based on the values of own_property first. In particular, for records with own_property = 0 and missing market_value, we fill the missings with zeros. For records with own_property = 1 and missing market_value, we fill the missings with the grand median.
 
+A> {linenos=off}
 ```r
-print(varsNA)
+> print(varsNA)
 ```
 
+A> {linenos=off}
 ```
 [1] "purpose"        "debt_to_income" "market_value"   "bankruptcy"    
 ```
 
+A> {linenos=off}
 ```r
 # if own_property = 0, market_value should also be 0
 upl$market_value[upl$own_property == 0 & is.na(upl$market_value)] = 0
@@ -250,6 +252,7 @@ for (var in varsNA) {
 }
 ```
 
+A> {linenos=off}
 ```
 [1] "purpose"
 
@@ -269,13 +272,14 @@ for (var in varsNA) {
 
 Change the character predictors to factors
 
-
+A> {linenos=off}
 ```r
 for (var in iv_cat) upl[[var]] = as.factor(upl[[var]])
 ```
 
 Create a *data* subfolder under proj_path to save the processed data for future use. 
 
+A> {linenos=off}
 ```r
 data_path = file.path(proj_path, "data")
 dir.create(data_path, showWarnings=F)
