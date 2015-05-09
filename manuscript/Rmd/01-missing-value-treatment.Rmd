@@ -68,7 +68,7 @@ print(pct_missing)
 Distribution of the target variable
 
 The data set contains 7250 observations, of which 82% are good customers while 18% are bad ones as shown below. The imbalanced distribution of the target variable implies that we can't merely use the overall classification accuracy to measure model performance. For example, suppose we build a model, and it gives us an accuracy of 82%. We wouldn't consider it to be a good model here because we can achieve the same 82% accuracy by simply predicting every observation as good without fitting any model. We want to build models that can correctly identify the bad customers. Therefore, we need to use more granular measures such as sensitivity and specificity to assess model performances. 
-```{r, target}
+```{r, target, fig.path='images/'}
 ## BEGIN Define Function
 
 pct_good_n_bad = function(dat, yvar, xvar = ""){
@@ -94,7 +94,7 @@ print(p)
 Explore the relationship between missing values and the target
 
 Bankruptcy has few missings (< 4%), Purpose has heavy missings (> 15%), Debt_to_Income has few missings (~ 6%), and Market_Value has 9% missings
-```{r, target_in_missing}
+```{r, target_in_missing, fig.path='images/'}
 # # Bankruptcy has few missings (< 4%)
 # tbl = pct_good_n_bad(dat, "bad", "bankruptcy")
 # plt = mk_barplot(tbl)

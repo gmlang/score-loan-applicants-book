@@ -1,10 +1,24 @@
+---
+title: "01-missing-value-treatment"
+author: "gmlang"
+date: "April 3, 2015"
+output: pdf_document
+---
+
+
+```r
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 5, fig.height = 5, dev = 'png')
+options(width = 100, scipen = 5, digits = 5)
+```
 
 Install and load the following packages.
 
 ```r
-install.packages("devtools")
-devtools::install_github("gmlang/ezplot")
-devtools::install_github("gmlang/loans")
+# install.packages("devtools")
+# devtools::install_github("gmlang/ezplot")
+# devtools::install_github("gmlang/loans")
 library(ezplot)
 library(loans)
 ```
@@ -129,7 +143,7 @@ p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
 print(p)
 ```
 
-![plot of chunk target](figure/target-1.png) 
+![plot of chunk target](images/target-1.png) 
 
 Explore the relationship between missing values and the target
 
@@ -185,13 +199,13 @@ for (var in varsNA) {
 }
 ```
 
-![plot of chunk target_in_missing](figure/target_in_missing-1.png) 
+![plot of chunk target_in_missing](images/target_in_missing-1.png) 
 
-![plot of chunk target_in_missing](figure/target_in_missing-2.png) 
+![plot of chunk target_in_missing](images/target_in_missing-2.png) 
 
-![plot of chunk target_in_missing](figure/target_in_missing-3.png) 
+![plot of chunk target_in_missing](images/target_in_missing-3.png) 
 
-![plot of chunk target_in_missing](figure/target_in_missing-4.png) 
+![plot of chunk target_in_missing](images/target_in_missing-4.png) 
 
 
 Deal with missing values.
