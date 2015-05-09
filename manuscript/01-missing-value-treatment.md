@@ -24,8 +24,7 @@ Examine the unsecured personal loans (upl) data.
 
 A> {linenos=off}
 ```r
-str(upl, vec.len=3)
-\n
+str(upl, vec.len=3)  
 'data.frame':	7250 obs. of  17 variables:
  $ purpose            : num  0 0 0 1 NA 0 1 0 ...
  $ age                : num  38.3 40.3 21.7 37.5 ...
@@ -68,8 +67,7 @@ for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 
 A> {linenos=off}
 ```
-str(upl[, iv_cat], vec.len=3) 
-\n
+str(upl[, iv_cat], vec.len=3)  
 'data.frame':	7250 obs. of  10 variables:
  $ bankruptcy         : chr  "0" "0" "0" ...
  $ purpose            : chr  "0" "0" "0" ...
@@ -103,7 +101,7 @@ print(pct_missing)
 ```
 
 A> {linenos=off}
-```
+```r
             vars percent_missing
 1        purpose          15.13%
 2 debt_to_income           6.03%
@@ -118,7 +116,6 @@ The data set contains 7250 observations, of which 82% are good customers while 1
 A> {linenos=off}
 ```r
 ## BEGIN Define Function
-
 pct_good_n_bad = function(dat, yvar, xvar = ""){
         if (xvar == "") tbl = data.frame(table(dat[[yvar]]))
         else tbl = data.frame(table(dat[[yvar]][is.na(dat[[xvar]])]))
@@ -127,9 +124,7 @@ pct_good_n_bad = function(dat, yvar, xvar = ""){
         names(tbl) = c(yvar, "percent") 
         tbl
 }
-
 ## END Define Function
-
 # calculate the distribution of each level in target and plot it
 tbl = pct_good_n_bad(upl, "bad")
 plt = mk_barplot(tbl)
