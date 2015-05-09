@@ -1,59 +1,57 @@
 Install and load the following packages.
 
-```r
-install.packages("devtools")
-devtools::install_github("gmlang/ezplot")
-devtools::install_github("gmlang/loans")
+``` r
+# install.packages("devtools")
+# devtools::install_github("gmlang/ezplot")
+# devtools::install_github("gmlang/loans")
 library(ezplot)
 library(loans)
 ```
 
 Create a directory called *score-loan-applicants* under your home directory. Use it as the project folder that will store all files related with our analysis, which include code, processed data, intermediate results, figures, and etc.
 
-```r
+``` r
 proj_path = "~/score-loan-applicants"
 dir.create(proj_path, showWarnings=FALSE)
 ```
 
 Examine the unsecured personal loans (upl) data.
 
-```r
+``` r
 str(upl, vec.len=3)
 ```
 
-```
-'data.frame':	7250 obs. of  17 variables:
- $ purpose            : num  0 0 0 1 NA 0 1 0 ...
- $ age                : num  38.3 40.3 21.7 37.5 ...
- $ marital            : num  0 1 0 1 0 0 0 1 ...
- $ employment         : num  1 1 1 3 2 1 5 1 ...
- $ annual_income      : num  225523 93072 66236 45626 ...
- $ debt_to_income     : num  0.393 0.357 0.868 1.574 ...
- $ market_value       : num  1540881 1159186 0 1069064 ...
- $ own_property       : num  1 1 0 1 1 0 0 1 ...
- $ late_repayments    : num  0 0 0 1 1 0 1 0 ...
- $ repossess          : num  0 0 0 0 0 0 0 1 ...
- $ conviction         : num  0 0 0 0 0 0 0 0 ...
- $ bankruptcy         : num  0 0 0 0 0 0 0 0 ...
- $ unspent_convictions: num  1 0 0 0 0 0 0 0 ...
- $ credit_applications: num  2 2 3 7 3 4 4 2 ...
- $ credit_line_age    : num  77.5 72.8 15.7 6.9 ...
- $ exist_customer     : num  0 0 0 0 0 1 0 0 ...
- $ bad                : num  0 0 0 1 1 1 0 0 ...
- - attr(*, "codepage")= int 65001
-```
+    'data.frame':   7250 obs. of  17 variables:
+     $ purpose            : num  0 0 0 1 NA 0 1 0 ...
+     $ age                : num  38.3 40.3 21.7 37.5 ...
+     $ marital            : num  0 1 0 1 0 0 0 1 ...
+     $ employment         : num  1 1 1 3 2 1 5 1 ...
+     $ annual_income      : num  225523 93072 66236 45626 ...
+     $ debt_to_income     : num  0.393 0.357 0.868 1.574 ...
+     $ market_value       : num  1540881 1159186 0 1069064 ...
+     $ own_property       : num  1 1 0 1 1 0 0 1 ...
+     $ late_repayments    : num  0 0 0 1 1 0 1 0 ...
+     $ repossess          : num  0 0 0 0 0 0 0 1 ...
+     $ conviction         : num  0 0 0 0 0 0 0 0 ...
+     $ bankruptcy         : num  0 0 0 0 0 0 0 0 ...
+     $ unspent_convictions: num  1 0 0 0 0 0 0 0 ...
+     $ credit_applications: num  2 2 3 7 3 4 4 2 ...
+     $ credit_line_age    : num  77.5 72.8 15.7 6.9 ...
+     $ exist_customer     : num  0 0 0 0 0 1 0 0 ...
+     $ bad                : num  0 0 0 1 1 1 0 0 ...
+     - attr(*, "codepage")= int 65001
 
 We see the data contains 7250 observations and 17 variables. You can find out the definitions of the variables by typing `?upl`.
 
 All variables are coded as numeric. We know the response variable is in fact a binary indicator. We thus change it to factor.
 
-```r
+``` r
 upl$bad = as.factor(upl$bad)
 ```
 
 We also need to change the following predictors to factors. But first, we change them to characters and check missing values.
 
-```r
+``` r
 iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions", 
            "conviction", "repossess", "own_property", "late_repayments", 
            "marital", "employment")
@@ -61,23 +59,21 @@ for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 str(upl[, iv_cat], vec.len=3)
 ```
 
-```
-'data.frame':	7250 obs. of  10 variables:
- $ bankruptcy         : chr  "0" "0" "0" ...
- $ purpose            : chr  "0" "0" "0" ...
- $ exist_customer     : chr  "0" "0" "0" ...
- $ unspent_convictions: chr  "1" "0" "0" ...
- $ conviction         : chr  "0" "0" "0" ...
- $ repossess          : chr  "0" "0" "0" ...
- $ own_property       : chr  "1" "1" "0" ...
- $ late_repayments    : chr  "0" "0" "0" ...
- $ marital            : chr  "0" "1" "0" ...
- $ employment         : chr  "1" "1" "1" ...
-```
+    'data.frame':   7250 obs. of  10 variables:
+     $ bankruptcy         : chr  "0" "0" "0" ...
+     $ purpose            : chr  "0" "0" "0" ...
+     $ exist_customer     : chr  "0" "0" "0" ...
+     $ unspent_convictions: chr  "1" "0" "0" ...
+     $ conviction         : chr  "0" "0" "0" ...
+     $ repossess          : chr  "0" "0" "0" ...
+     $ own_property       : chr  "1" "1" "0" ...
+     $ late_repayments    : chr  "0" "0" "0" ...
+     $ marital            : chr  "0" "1" "0" ...
+     $ employment         : chr  "1" "1" "1" ...
 
 Check which variables have missing values.
 
-```r
+``` r
 n = nrow(upl) # count total number of observations
 vars = names(upl)
 varsNA = pctNA = c()
@@ -93,19 +89,17 @@ pct_missing = data.frame(vars=varsNA, percent_missing = pctNA)
 print(pct_missing)
 ```
 
-```
-            vars percent_missing
-1        purpose          15.13%
-2 debt_to_income           6.03%
-3   market_value           9.17%
-4     bankruptcy           3.97%
-```
+                vars percent_missing
+    1        purpose          15.13%
+    2 debt_to_income           6.03%
+    3   market_value           9.17%
+    4     bankruptcy           3.97%
 
 Distribution of the target variable
 
-The data set contains 7250 observations, of which 82% are good customers while 18% are bad ones as shown below. The imbalanced distribution of the target variable implies that we can't merely use the overall classification accuracy to measure model performance. For example, suppose we build a model, and it gives us an accuracy of 82%. We wouldn't consider it to be a good model here because we can achieve the same 82% accuracy by simply predicting every observation as good without fitting any model. We want to build models that can correctly identify the bad customers. Therefore, we need to use more granular measures such as sensitivity and specificity to assess model performances. 
+The data set contains 7250 observations, of which 82% are good customers while 18% are bad ones as shown below. The imbalanced distribution of the target variable implies that we can't merely use the overall classification accuracy to measure model performance. For example, suppose we build a model, and it gives us an accuracy of 82%. We wouldn't consider it to be a good model here because we can achieve the same 82% accuracy by simply predicting every observation as good without fitting any model. We want to build models that can correctly identify the bad customers. Therefore, we need to use more granular measures such as sensitivity and specificity to assess model performances.
 
-```r
+``` r
 ## BEGIN Define Function
 
 pct_good_n_bad = function(dat, yvar, xvar = ""){
@@ -128,12 +122,13 @@ p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
 print(p)
 ```
 
-![plot of chunk target](figure/target-1.png) 
+![](01-missing-value-treatment_files/figure-markdown_github/target-1.png)
+
 Explore the relationship between missing values and the target
 
-Bankruptcy has few missings (< 4%), Purpose has heavy missings (> 15%), Debt_to_Income has few missings (~ 6%), and Market_Value has 9% missings
+Bankruptcy has few missings (\< 4%), Purpose has heavy missings (\> 15%), Debt\_to\_Income has few missings (~ 6%), and Market\_Value has 9% missings
 
-```r
+``` r
 # # Bankruptcy has few missings (< 4%)
 # tbl = pct_good_n_bad(dat, "bad", "bankruptcy")
 # plt = mk_barplot(tbl)
@@ -183,32 +178,29 @@ for (var in varsNA) {
 }
 ```
 
-![plot of chunk target_in_missing](figure/target_in_missing-1.png) 
+![](01-missing-value-treatment_files/figure-markdown_github/target_in_missing-1.png)
 
-![plot of chunk target_in_missing](figure/target_in_missing-2.png) 
+![](01-missing-value-treatment_files/figure-markdown_github/target_in_missing-2.png)
 
-![plot of chunk target_in_missing](figure/target_in_missing-3.png) 
+![](01-missing-value-treatment_files/figure-markdown_github/target_in_missing-3.png)
 
-![plot of chunk target_in_missing](figure/target_in_missing-4.png) 
-
+![](01-missing-value-treatment_files/figure-markdown_github/target_in_missing-4.png)
 
 Deal with missing values.
 
 For categorical vars, change missing values to "unkown".
 
-For continuous vars except market_value, fill the missing values with the grand median. 
+For continuous vars except market\_value, fill the missing values with the grand median.
 
-For market_value, because it measures similar info with own_property, we fill the missings in market_value based on the values of own_property first. In particular, for records with own_property = 0 and missing market_value, we fill the missings with zeros. For records with own_property = 1 and missing market_value, we fill the missings with the grand median.
+For market\_value, because it measures similar info with own\_property, we fill the missings in market\_value based on the values of own\_property first. In particular, for records with own\_property = 0 and missing market\_value, we fill the missings with zeros. For records with own\_property = 1 and missing market\_value, we fill the missings with the grand median.
 
-```r
+``` r
 print(varsNA)
 ```
 
-```
-[1] "purpose"        "debt_to_income" "market_value"   "bankruptcy"    
-```
+    [1] "purpose"        "debt_to_income" "market_value"   "bankruptcy"    
 
-```r
+``` r
 # if own_property = 0, market_value should also be 0
 upl$market_value[upl$own_property == 0 & is.na(upl$market_value)] = 0
 
@@ -234,35 +226,31 @@ for (var in varsNA) {
 }
 ```
 
-```
-[1] "purpose"
+    [1] "purpose"
 
-      0       1 unknown 
-   4290    1863    1097 
-[1] "debt_to_income"
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.0505  0.3000  0.4400  0.5620  0.6500 17.2000 
-[1] "market_value"
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      0       0  856000  730000 1290000 2680000 
-[1] "bankruptcy"
+          0       1 unknown 
+       4290    1863    1097 
+    [1] "debt_to_income"
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+     0.0505  0.3000  0.4400  0.5620  0.6500 17.2000 
+    [1] "market_value"
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+          0       0  856000  730000 1290000 2680000 
+    [1] "bankruptcy"
 
-      0       1 unknown 
-   6924      38     288 
-```
+          0       1 unknown 
+       6924      38     288 
 
 Change the character predictors to factors
 
-
-```r
+``` r
 for (var in iv_cat) upl[[var]] = as.factor(upl[[var]])
 ```
 
-Create a *data* subfolder under proj_path to save the processed data for future use. 
+Create a *data* subfolder under proj\_path to save the processed data for future use.
 
-```r
+``` r
 data_path = file.path(proj_path, "data")
 dir.create(data_path, showWarnings=F)
 save(upl, iv_cat, file=file.path(data_path, "cleaned-01.rda"))
 ```
-

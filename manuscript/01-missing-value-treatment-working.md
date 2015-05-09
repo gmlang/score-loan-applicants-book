@@ -1,5 +1,8 @@
+# 01-missing-value-treatment
+
 Install and load the following packages.
 
+A> {linenos=off}
 ```r
 install.packages("devtools")
 devtools::install_github("gmlang/ezplot")
@@ -8,75 +11,78 @@ library(ezplot)
 library(loans)
 ```
 
-Create a directory called *score-loan-applicants* under your home directory. Use it as the project folder that will store all files related with our analysis, which include code, processed data, intermediate results, figures, and etc.
+Create a directory called *score-loan-applicants* under your home directory. Set it as the working directory where we'll run the analysis. 
 
+A> {linenos=off}
 ```r
 proj_path = "~/score-loan-applicants"
 dir.create(proj_path, showWarnings=FALSE)
+setwd(proj_path)
 ```
+
+You can check your working directory by running `getwd()`. 
 
 Examine the unsecured personal loans (upl) data.
 
-```r
-str(upl, vec.len=3)
+{linenos=off}
+```r 
+> str(upl)
 ```
 
-```
+A> {linenos=off}
+```r
 'data.frame':	7250 obs. of  17 variables:
- $ purpose            : num  0 0 0 1 NA 0 1 0 ...
- $ age                : num  38.3 40.3 21.7 37.5 ...
- $ marital            : num  0 1 0 1 0 0 0 1 ...
- $ employment         : num  1 1 1 3 2 1 5 1 ...
- $ annual_income      : num  225523 93072 66236 45626 ...
- $ debt_to_income     : num  0.393 0.357 0.868 1.574 ...
- $ market_value       : num  1540881 1159186 0 1069064 ...
- $ own_property       : num  1 1 0 1 1 0 0 1 ...
- $ late_repayments    : num  0 0 0 1 1 0 1 0 ...
- $ repossess          : num  0 0 0 0 0 0 0 1 ...
- $ conviction         : num  0 0 0 0 0 0 0 0 ...
- $ bankruptcy         : num  0 0 0 0 0 0 0 0 ...
- $ unspent_convictions: num  1 0 0 0 0 0 0 0 ...
- $ credit_applications: num  2 2 3 7 3 4 4 2 ...
- $ credit_line_age    : num  77.5 72.8 15.7 6.9 ...
- $ exist_customer     : num  0 0 0 0 0 1 0 0 ...
- $ bad                : num  0 0 0 1 1 1 0 0 ...
- - attr(*, "codepage")= int 65001
+ $ purpose            : Factor w/ 3 levels "0","1","unknown": 1 1 1 2 3 1 2 1 1 1 ...
+ $ age                : num  38.3 40.3 21.7 37.5 43.8 ...
+ $ marital            : Factor w/ 2 levels "0","1": 1 2 1 2 1 1 1 2 2 2 ...
+ $ employment         : Factor w/ 6 levels "1","2","3","4",..: 1 1 1 3 2 1 5 1 1 1 ...
+ $ annual_income      : num  225523 93072 66236 45626 79104 ...
+ $ debt_to_income     : num  0.393 0.357 0.868 1.574 1.167 ...
+ $ market_value       : num  1540881 1159186 0 1069064 582007 ...
+ $ own_property       : Factor w/ 2 levels "0","1": 2 2 1 2 2 1 1 2 2 2 ...
+ $ late_repayments    : Factor w/ 2 levels "0","1": 1 1 1 2 2 1 2 1 1 1 ...
+ $ repossess          : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 2 1 1 ...
+ $ conviction         : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
+ $ bankruptcy         : Factor w/ 3 levels "0","1","unknown": 1 1 1 1 1 1 1 1 1 1 ...
+ $ unspent_convictions: Factor w/ 2 levels "0","1": 2 1 1 1 1 1 1 1 1 1 ...
+ $ credit_applications: num  2 2 3 7 3 4 4 2 2 2 ...
+ $ credit_line_age    : num  77.5 72.8 15.7 6.9 14 ...
+ $ exist_customer     : Factor w/ 2 levels "0","1": 1 1 1 1 1 2 1 1 2 2 ...
+ $ bad                : Factor w/ 2 levels "0","1": 1 1 1 2 2 2 1 1 1 1 ...
 ```
 
-We see the data contains 7250 observations and 17 variables. You can find out the definitions of the variables by typing `?upl`.
+We see the data contains 7250 observations and 17 variables. You can find out the definitions of the variables by typing `?upl` in R.
 
-All variables are coded as numeric. We know the response variable is in fact a binary indicator. We thus change it to factor.
+All variables are coded as numeric. We need to change the following variables to factors. But first, we change them to characters and check missing values.
 
-```r
-upl$bad = as.factor(upl$bad)
-```
-
-We also need to change the following predictors to factors. But first, we change them to characters and check missing values.
-
+A> {linenos=off}
 ```r
 iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions", 
            "conviction", "repossess", "own_property", "late_repayments", 
-           "marital", "employment")
+           "marital", "employment", "bad")
 for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
-str(upl[, iv_cat], vec.len=3)
+str(upl[, iv_cat])
 ```
 
-```
-'data.frame':	7250 obs. of  10 variables:
- $ bankruptcy         : chr  "0" "0" "0" ...
- $ purpose            : chr  "0" "0" "0" ...
- $ exist_customer     : chr  "0" "0" "0" ...
- $ unspent_convictions: chr  "1" "0" "0" ...
- $ conviction         : chr  "0" "0" "0" ...
- $ repossess          : chr  "0" "0" "0" ...
- $ own_property       : chr  "1" "1" "0" ...
- $ late_repayments    : chr  "0" "0" "0" ...
- $ marital            : chr  "0" "1" "0" ...
- $ employment         : chr  "1" "1" "1" ...
+A> {linenos=off}
+```r
+'data.frame':	7250 obs. of  11 variables:
+ $ bankruptcy         : chr  "0" "0" "0" "0" ...
+ $ purpose            : chr  "0" "0" "0" "1" ...
+ $ exist_customer     : chr  "0" "0" "0" "0" ...
+ $ unspent_convictions: chr  "1" "0" "0" "0" ...
+ $ conviction         : chr  "0" "0" "0" "0" ...
+ $ repossess          : chr  "0" "0" "0" "0" ...
+ $ own_property       : chr  "1" "1" "0" "1" ...
+ $ late_repayments    : chr  "0" "0" "0" "1" ...
+ $ marital            : chr  "0" "1" "0" "1" ...
+ $ employment         : chr  "1" "1" "1" "3" ...
+ $ bad                : chr  "0" "0" "0" "1" ...
 ```
 
 Check which variables have missing values.
 
+A> {linenos=off}
 ```r
 n = nrow(upl) # count total number of observations
 vars = names(upl)
@@ -90,6 +96,13 @@ for (var in vars) {
 }
 pctNA = paste0(round(pctNA*100, 2), "%")
 pct_missing = data.frame(vars=varsNA, percent_missing = pctNA)
+```
+
+```
+Error in data.frame(vars = varsNA, percent_missing = pctNA): arguments imply differing number of rows: 0, 1
+```
+
+```r
 print(pct_missing)
 ```
 
@@ -119,6 +132,9 @@ pct_good_n_bad = function(dat, yvar, xvar = ""){
 
 ## END Define Function
 
+# change the target to factor
+upl$bad = as.factor(upl$bad)
+
 # calculate the distribution of each level in target and plot it
 tbl = pct_good_n_bad(upl, "bad")
 plt = mk_barplot(tbl)
@@ -128,7 +144,8 @@ p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
 print(p)
 ```
 
-![plot of chunk target](figure/target-1.png) 
+![Target Distribution](figure/unnamed-chunk-7-1.pdf) 
+
 Explore the relationship between missing values and the target
 
 Bankruptcy has few missings (< 4%), Purpose has heavy missings (> 15%), Debt_to_Income has few missings (~ 6%), and Market_Value has 9% missings
@@ -183,15 +200,6 @@ for (var in varsNA) {
 }
 ```
 
-![plot of chunk target_in_missing](figure/target_in_missing-1.png) 
-
-![plot of chunk target_in_missing](figure/target_in_missing-2.png) 
-
-![plot of chunk target_in_missing](figure/target_in_missing-3.png) 
-
-![plot of chunk target_in_missing](figure/target_in_missing-4.png) 
-
-
 Deal with missing values.
 
 For categorical vars, change missing values to "unkown".
@@ -205,7 +213,7 @@ print(varsNA)
 ```
 
 ```
-[1] "purpose"        "debt_to_income" "market_value"   "bankruptcy"    
+NULL
 ```
 
 ```r
@@ -232,23 +240,6 @@ for (var in varsNA) {
                 print(summary(upl[[var]]))
         }
 }
-```
-
-```
-[1] "purpose"
-
-      0       1 unknown 
-   4290    1863    1097 
-[1] "debt_to_income"
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.0505  0.3000  0.4400  0.5620  0.6500 17.2000 
-[1] "market_value"
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      0       0  856000  730000 1290000 2680000 
-[1] "bankruptcy"
-
-      0       1 unknown 
-   6924      38     288 
 ```
 
 Change the character predictors to factors

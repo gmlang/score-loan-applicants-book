@@ -1,0 +1,158 @@
+---
+title: "02-descriptive-analysis"
+author: "gmlang"
+date: "April 16, 2015"
+output: pdf_document
+---
+
+```{r}
+# settings for RMarkdown 
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 4, fig.height = 4, dev = 'pdf')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+### Load data 
+```{r}
+library(ezplot)
+
+# set path and load data
+proj_path = '~/Movies/masterr-vids/predict-bad-customers'
+data_path = file.path(proj_path, 'data')
+file_path = file.path(data_path, 'cleaned-01.rda')
+load(file_path)
+str(dat)
+```
+
+### Explore relationships between Categorical Vars and the Target
+```{r, results='asis'}
+for (var in iv_cat) {
+        tbl = table(dat$bad, dat[[var]])
+        pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
+        pct = data.frame(pct)
+        pct = cbind(row.names(pct), pct)
+        names(pct) = c(var, "Percent_Bad")
+        row.names(pct) = NULL
+        
+        # print table
+        tbl_pct = pct
+        tbl_pct$Percent_Bad = paste0(round(pct$Percent_Bad, 4) * 100, "%")
+        print(kable(tbl_pct, row.names = FALSE, format = "pandoc", 
+                    caption=var))
+        cat("\n")
+        
+        # print bar plot of percent of bad amongst different predictor levels
+        plt = mk_barplot(pct)
+        p = plt(var, "Percent_Bad", fillby=var, xlab=var, 
+                ylab="Percent of bad customers", legend=F,
+                main=paste("Percent of Bad customers \nat each level of", var))
+        p = scale_axis(p, "y", use_pct=TRUE, pct_jump=0.2)
+        print(p)
+        cat("\n")
+}
+```
+
+Remark: from the above plots, we see the categorical vars can be grouped into
+
+* Strong predictors: Bankruptcy, Conviction, Repossess, Own_Property, Late_Repayments
+* Weak predictors: Purpose, Marital, Employment
+* Non Predictors: Exist_Customer, Unspent_Convictions
+
+### Explore relationships between Continuous Vars and the Target
+```{r}
+iv_con = c("debt_to_income", "market_value", "credit_line_age", 
+           "credit_applications", "annual_income", "age")
+
+# make boxplots
+plt = mk_boxplot(dat)
+for (var in iv_con) {
+        p = plt("bad", var, xlab="0 - Good, 1 - Bad", ylab=var, 
+                main = paste("Distribution of", var), legend=F)
+        p = scale_axis(p, "y", use_comma=T)
+        print(p)
+        cat('\r\n\r\n')
+}
+```
+
+### Create log transform of debt_to_income and annual_income
+```{r}
+dat = within(dat, {
+             log_debt_to_income = log(debt_to_income)
+             log_annual_income = log(annual_income) 
+             })
+
+# draw boxplots of the log transformed vars vs. the target
+plt = mk_boxplot(dat)
+for (var in c("log_debt_to_income", "log_annual_income")) {
+        p = plt("bad", var, xlab="0 - Good, 1 - Bad", ylab=var, 
+                main = paste("Distribution of", var), legend=F)
+        print(p)
+}
+```
+
+Remark: from the above plots, we see the continuous vars can be roughly grouped into
+
+* Strong predictors: log_debt_to_income, credit_line_age, log_annual_income
+* Weak predictors: credit_applications
+* Non Predictors: age
+
+### Create a categorical version of market_value by binning its values into different intervals
+```{r}
+summary(dat$market_value)
+a = cut(dat$market_value, c(0, 1, 910600, 1290000, 2680000), right=F)
+levels(a) = c("$0", "$1 - $910,600", "$910,601 - $1,290,000", 
+              "$1,290,001 - $2,680,000")
+# sum(is.na(a))
+# dat$market_value[which(is.na(a))]
+table(a)
+dat$market_value_cat = a
+
+# update iv_cat 
+iv_cat = c(iv_cat, "market_value_cat")
+
+# draw barplots showing percent of bad for each level of market_value_cat
+var = "market_value_cat"
+tbl = table(dat$bad, dat[[var]])
+pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
+pct = data.frame(pct)
+pct = cbind(row.names(pct), pct)
+names(pct) = c(var, "Percent_Bad")
+row.names(pct) = NULL
+
+# print table
+tbl_pct = pct
+tbl_pct$Percent_Bad = paste0(round(pct$Percent_Bad, 4) * 100, "%")
+print(kable(tbl_pct, row.names = FALSE, format = "pandoc", caption=var))
+
+# print bar charts of percent of bad amongst different predictor levels
+plt = mk_barplot(pct)
+p = plt(var, "Percent_Bad", fillby=var, xlab=var, ylab="Percent of bad customers", 
+        legend=F, main=paste("Percent of Bad customers \nat each level of", var))
+p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
+p = rotate_axis_text(p, 15)
+print(p)
+```
+
+Remark: market_value_cat is also a strong predictor.
+
+### Collect these variables according to above remarks
+```{r}
+# categorical vars
+iv_cat_strong = tolower(c("Conviction", "Repossess", "Own_Property", 
+                          "Late_Repayments", "market_value_cat"))
+iv_cat_weak = tolower(c("Bankruptcy", "Purpose", "Marital", "Employment"))
+iv_cat_none = tolower(c("Exist_Customer", "Unspent_Convictions"))
+
+# continuous vars
+iv_con_strong = tolower(c("log_debt_to_income", "Credit_Line_Age", 
+                          "log_annual_income"))
+iv_con_weak = tolower(c("Credit_Applications"))
+iv_con_none = tolower(c("Age"))
+```
+
+### Save
+```{r}
+save(dat, iv_cat_strong, iv_cat_weak, iv_cat_none, iv_con_strong,
+     iv_con_weak, iv_con_none, file = file.path(data_path, "cleaned-02.rda"))
+```

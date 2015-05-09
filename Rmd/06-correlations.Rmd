@@ -1,0 +1,164 @@
+---
+title: "06-Correlations Amongst Predictors"
+author: "gmlang"
+date: "April 3, 2015"
+output: pdf_document
+---
+
+```{r}
+# settings for RMarkdown 
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'pdf')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+### Load data
+```{r}
+library(ezplot)
+
+# set path and load data
+proj_path = '~/Movies/masterr-vids/predict-bad-customers'
+data_path = file.path(proj_path, 'data')
+load(file.path(data_path, 'cleaned-05.rda'))
+```
+
+### Correlations amongst Continuous Vars
+```{r}
+cor(dat[, iv_con])
+```
+
+Remark: the following pairs are highly correlated
+
+* log_debt_to_income, credit_line_age (-0.74)
+* log_debt_to_income, log_annual_income (-0.8)
+
+We keep log_annual_income and drop log_debt_to_income because the latter has a much lower Information Value. The Information Value of log_debt_to_income is 0.232 while that of log_annual_income is 0.467.
+
+### Drop log_debt_to_income from iv_con
+```{r}
+iv_con = iv_con[iv_con != "log_debt_to_income"]
+```
+
+### Drop own_property from iv_cat
+We keep market_value_cat and drop own_property because these two variables are dependent (If market_value_cat is > zero, own_property must be equal to 1 and if own_property = 0, market_value_cat must also be zero.) and market_value_cat contains richer info than own_property. 
+```{r}
+iv_cat = iv_cat[iv_cat != "own_property"]
+```
+
+### Dependency amongst Categorical Vars
+```{r, cache=TRUE}
+iv_cat_reorder = c(iv_cat[2:5], iv_cat[c(1,6)])
+mat = combn(iv_cat_reorder, 2)
+for (j in 1:ncol(mat)) {
+        pair = mat[1:2, j]
+        var1 = pair[1]
+        var2 = pair[2]
+
+        tbl = table(dat[[var1]], dat[[var2]])
+        pct = tbl["1", ] / apply(tbl, 2, sum)
+        pct = data.frame(pct)
+        pct = cbind(row.names(pct), pct)
+        names(pct) = c(var2, "Percent_1")
+        row.names(pct) = NULL
+        
+        # print table
+        tbl_pct = pct
+        tbl_pct$Percent_1 = paste0(round(pct$Percent_1, 4) * 100, "%")
+        print(kable(tbl_pct, row.names = FALSE, format = "pandoc", 
+                    caption=paste(pair, collapse=" vs. ")))
+        cat("\n")
+        
+        # make barplots
+        plt = mk_barplot(pct)
+        p = plt(var2, "Percent_1", fillby=var2, xlab=var2, 
+                ylab=paste(var1, "= 1"), legend=F)
+        p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
+        p = rotate_axis_text(p, 15)
+        print(p)
+        cat("\n")
+}
+```
+
+Remark: the following pairs are possibly dependent
+
+* marital, conviction
+* marital, late_repayments
+* marital, bankruptcy
+* conviction, own_property
+* conviction, late_repayments
+* conviction, bankruptcy
+* conviction, market_value_cat
+* repossess, own_property
+* repossess, late_repayments
+* repossess, bankruptcy
+* repossess, market_value_cat
+* late_repayments, bankruptcy
+* late_repayments, market_value_cat
+* bankruptcy, market_value_cat
+
+### Dependency beween Categorical and Continuous Vars
+```{r}
+# make boxplots
+plt = mk_boxplot(dat)
+for (con_var in iv_con) {
+        for (cat_var in iv_cat) {
+                p = plt(cat_var, con_var, xlab=cat_var, ylab=con_var, legend=F)
+                p = rotate_axis_text(p, 15)
+                print(p)      
+                cat('\r\n\r\n')
+        }
+}
+```
+
+Remark: the following pairs are possibly dependent
+
+* credit_applications, bankruptcy
+* credit_applications, conviction
+* credit_applications, repossess
+* credit_applications, late_repayments
+* credit_line_age, bankruptcy
+* credit_line_age, conviction
+* credit_line_age, repossess
+* credit_line_age, late_repayments
+* credit_line_age, market_value_cat
+* log_annual_income, bankruptcy
+* log_annual_income, conviction
+* log_annual_income, repossess
+* log_annual_income, late_repayments
+* log_annual_income, market_value_cat 
+
+### Update predictors and save
+```{r, echo=FALSE}
+# interact_terms1 = c("marital:conviction", 
+#                     "marital:late_repayments",
+#                     "marital:bankruptcy", 
+#                     "conviction:own_property",
+#                     "conviction:late_repayments", 
+#                     "conviction:bankruptcy",
+#                     "conviction:market_value_cat", 
+#                     "repossess:own_property",
+#                     "repossess:late_repayments", 
+#                     "repossess:bankruptcy",
+#                     "repossess:market_value_cat", 
+#                     "late_repayments:bankruptcy",
+#                     "late_repayments:market_value_cat",
+#                     "bankruptcy:market_value_cat")
+# interact_terms2 = c("credit_applications:bankruptcy",
+#                     "credit_applications:conviction",
+#                     "credit_applications:repossess",
+#                     "credit_applications:late_repayments",
+#                     "credit_line_age:bankruptcy",
+#                     "credit_line_age:conviction", 
+#                     "credit_line_age:repossess",
+#                     "credit_line_age:late_repayments",
+#                     "credit_line_age:market_value_cat",
+#                     "log_annual_income:bankruptcy",
+#                     "log_annual_income:conviction",
+#                     "log_annual_income:repossess",
+#                     "log_annual_income:late_repayments",
+#                     "log_annual_income:market_value_cat")
+
+predictors = c(iv_con, iv_cat)
+save(dat, predictors, file=file.path(data_path, "cleaned-06.rda"))
+```

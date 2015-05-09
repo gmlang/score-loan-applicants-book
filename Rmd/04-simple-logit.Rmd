@@ -1,0 +1,54 @@
+---
+title: "04-Fit Simple Logistic Regression Models for each Predictor"
+author: "gmlang"
+date: "April 3, 2015"
+output: pdf_document
+---
+
+```{r}
+# settings for RMarkdown 
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 4, fig.height = 4, dev = 'pdf')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+### Load data
+```{r}
+# set path and load data
+proj_path = '~/Movies/masterr-vids/predict-bad-customers'
+data_path = file.path(proj_path, 'data')
+file_path = file.path(data_path, 'cleaned-02.rda')
+load(file_path)
+
+# collect predictors
+predictors = c(iv_cat_strong, iv_cat_weak, iv_cat_none, 
+               iv_con_strong, iv_con_weak, iv_con_none)
+```
+
+### Fit simple logistic regression on each predictor
+```{r, cache=TRUE}
+simple_est = data.frame()
+for (var in predictors) {
+        f = formula(paste0("bad ~ ", var))
+        fit = glm(f, data=dat, family=binomial)
+        simple_est = rbind(simple_est, rbind(summary(fit)$coef[2, c("Estimate", "Pr(>|z|)")]))
+} 
+simple_est = cbind(var=predictors, simple_est)
+simple_est$Significant = ifelse(simple_est[["Pr(>|z|)"]] < 0.05, "*", " ")
+print(simple_est)
+```
+
+### Collect predictors into different groups based on significance
+```{r}
+iv_sig = as.character(simple_est$var[simple_est[["Pr(>|z|)"]] < 0.05])
+print(iv_sig)
+
+iv_non_sig = as.character(simple_est$var[simple_est[["Pr(>|z|)"]] > 0.05])
+print(iv_non_sig)
+```
+
+### Save
+```{r}
+save(iv_sig, iv_non_sig, file=file.path(data_path, 'cleaned-04.rda'))
+```
