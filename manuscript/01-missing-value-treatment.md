@@ -1,10 +1,11 @@
+# Chapter one
 
 Install and load the following packages.
 
 ```r
-# install.packages("devtools")
-# devtools::install_github("gmlang/ezplot")
-# devtools::install_github("gmlang/loans")
+install.packages("devtools")
+devtools::install_github("gmlang/ezplot")
+devtools::install_github("gmlang/loans")
 
 library(ezplot)
 library(loans)
