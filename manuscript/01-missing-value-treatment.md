@@ -2,7 +2,14 @@
 
 Install and load the following packages.
 
-{linenos=off, lang=“r”}
+{title="Code for plotting the density", line-numbers=off,lang=r}
+~~~~~~
+x <- c(-0.5, 0, 1, 1, 1.5)
+y <- c(0, 0, 2, 0, 0)
+plot(x, y, lwd = 3,frame = FALSE, type = "l")
+~~~~~~
+
+{linenos=off, lang=r}
 ~~~~~~~~
 install.packages("devtools")
 devtools::install_github("gmlang/ezplot")
