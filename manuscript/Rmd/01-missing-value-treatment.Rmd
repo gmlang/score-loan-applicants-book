@@ -50,7 +50,7 @@ str(upl[, iv_cat], vec.len=3)
 
 Check which variables have missing values.
 ```{r}
-n = nrow(upl) # count total number of observations
+n = nrow(upl) # total number of observations
 vars = names(upl)
 varsNA = pctNA = c()
 for (var in vars) {
