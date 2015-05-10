@@ -15,13 +15,15 @@ output: md_document
 3. Install devtools by running 
 
 A>
+
 ```r
-install.packages("devtools")
+# install.packages("devtools")
 ```
 4. Use devtools to install the following R packages.
 
-A> 
+A>
+
 ```r
-devtools::install_github("gmlang/ezplot")
-devtools::install_github("gmlang/loans")
+# devtools::install_github("gmlang/ezplot")
+# devtools::install_github("gmlang/loans")
 ```
