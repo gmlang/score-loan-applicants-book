@@ -5,7 +5,7 @@ date: "April 3, 2015"
 output: md_document
 ---
 
-# Set Up
+# Set up
 
 1. Install [R](http://www.r-project.org) and [Rstudio](http://www.rstudio.com/products/rstudio/download/).
 2. Install a set of development tools:
