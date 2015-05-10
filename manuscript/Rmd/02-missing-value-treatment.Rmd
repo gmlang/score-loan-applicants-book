@@ -12,10 +12,21 @@ opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
 options(width = 100, scipen = 5, digits = 5)
 ```
 
-Examine the unsecured personal loans (upl) data.
+Create a directory called *score-loan-applicants* under your home directory. Use it as the project folder that will store all files related with our analysis, which include code, processed data, intermediate results, figures, and etc.
+A> {linenos=off}
+```{r}
+proj_path = "~/score-loan-applicants"
+dir.create(proj_path, showWarnings=FALSE)
+```
+
+Load the `ezplot` and `loans` libraries. The former allows us to make nice looking ggplot2 plots easily. The latter contains the dataset. 
 ```{r}
 library(ezplot)
 library(loans)
+```
+
+Examine the unsecured personal loans (upl) dataset.
+```{r}
 str(upl, vec.len=3)
 ```
 
