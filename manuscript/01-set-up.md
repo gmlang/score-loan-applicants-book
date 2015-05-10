@@ -13,14 +13,12 @@ output: md_document
 * On Mac, install the [Xcode command line tools](https://developer.apple.com/downloads). 
 * On Linux, install the R development package, usually called **r-devel** or **r-base-dev**.
 3. Install devtools by running 
-
 A> {linenos=off}
 ```r
 install.packages("devtools")
 ```
 
 4. Use devtools to install the following R packages.
-
 A> {linenos=off}
 ```r
 devtools::install_github("gmlang/ezplot")
