@@ -181,16 +181,6 @@ Let's perform the following missing value treatments. For purpose and bankruptcy
 
 A>
 ```r
-print(varsNA)
-```
-
-A> {linenos=off}
-```
-[1] "purpose"        "debt_to_income" "market_value"   "bankruptcy"    
-```
-
-A>
-```r
 upl$market_value[upl$own_property == 0 & is.na(upl$market_value)] = 0
 for (var in varsNA) {
         if (class(upl[[var]]) == "character") {

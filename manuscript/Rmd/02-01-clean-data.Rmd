@@ -128,7 +128,6 @@ We see the target variable has the same distribution (82% good - 18% bad) amongs
 Let's perform the following missing value treatments. For purpose and bankruptcy, because they are categorical, we change their missing values to "unkown". For debt_to_income, because it's continuous, we fill its missing values with the median of its non-missing values. For market_value, because it is related with own_property, we first fill its missing values based on the values of own_property. In particular, for customers with own_property = 0, we fill their missing market values with zeros. For customers with own_property = 1, we fill their missing market values with the median of the non-missing values. Note that we use median instead of mean. This is because a few large values in market_value will result a big mean, while the median is more immune to outliers' influence, and hence is a better measure of average in this case.
 
 ```{r}
-print(varsNA)
 upl$market_value[upl$own_property == 0 & is.na(upl$market_value)] = 0
 for (var in varsNA) {
         if (class(upl[[var]]) == "character") {
