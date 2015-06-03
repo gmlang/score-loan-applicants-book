@@ -53,3 +53,5 @@ Your objective is to conduct a thorough analysis of the data and recommend a mod
 * Which variables appear to be highly predictive of **bad** customers?* Can a model be used to justify the decision to accept an applicant or not? If so does the model agree with common sense? (e.g. do the contributions of the variables in the model make sense; are the rules that arise from the model intuitive)?* How do you propose to handle the specificity sensitivity trade-off? In particular,
   - What is the maximum proportion of good customers that can be granted loans while ensuring that x% of the bad customers are correctly identified.
   - What is the maximum proportion of the overall population that can be granted loans while ensuring that x% of the bad customers are correctly identified.
+  
+In subsequent chapters, I'll walk you through the complete analysis step by step, addressing these questions along the way. But first, let's set up the tools.
