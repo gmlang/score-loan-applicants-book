@@ -12,4 +12,3 @@ knitr::knit(file_in)
 
 file_in = file.path(rmd_path, "02-missing-value-treatment.Rmd")
 knitr::knit(file_in)
-
