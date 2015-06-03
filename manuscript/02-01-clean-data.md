@@ -218,7 +218,7 @@ A>
 for (var in iv_cat) upl[[var]] = as.factor(upl[[var]])
 ```
 
-Finally, let's create a *data* subfolder under proj_path and save the cleaned data there. We'll use this cleaned data for our exploratory analysis in the next section.  
+Finally, let's create a *data* subfolder under proj_path and save the cleaned data there. We'll use this cleaned data for descriptive analysis in the next section.  
 
 A>
 ```r
