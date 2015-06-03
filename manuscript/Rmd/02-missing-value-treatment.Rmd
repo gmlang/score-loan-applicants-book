@@ -21,17 +21,16 @@ library(loans)
 Examine the dataset.
 ```{r}
 str(upl, vec.len=3)
-names(upl)
 ```
 
 We see the data contains 7250 observations and 17 variables. You can find out the definitions of the variables by typing `?upl`.
 
-All variables are coded as numeric. Some shouldn't be. For example, we know the response variable is in fact a binary indicator. We thus change it to factor.
+All variables are coded as numeric. Some shouldn't be. For example, we know the target variable **bad** is in fact binary. So we change it to factor.
 ```{r}
 upl$bad = as.factor(upl$bad)
 ```
 
-We also need to change the following predictors to factors. But first, we change them to characters because we need to check if they have missing values.
+We also need to change the following predictors to factors. But first, we change them to characters and check if they have missing values.
 ```{r}
 iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions", 
            "conviction", "repossess", "own_property", "late_repayments", 
