@@ -3,18 +3,22 @@
 
 A bank has provided you with a dataset of Unsecured Personal Loans (UPLs) collected over the past two years. A description of all the variables is given in Table 1. 
 
-{title = "Table 1"}
+{title = "Table 1", width = "wide"}
 |Variable Name       |Definition                                                                   |
 |--------------------|-----------------------------------------------------------------------------|
 |purpose             |0: standard credit card; 1: balance transfer                                 |
+|--------------------|-----------------------------------------------------------------------------|
 |age                 |applicant age (in years)                                                     |
+|--------------------|-----------------------------------------------------------------------------|
 |marital             |1 if applicant is married; 0 otherwise                                       |
+|--------------------|-----------------------------------------------------------------------------|
 |employment          |1 employed full time                                                         |
 |                    |2 employed part time                                                         |
 |                    |3 self employed                                                              |
 |                    |4 temporary employment                                                       |
 |                    |5 homemaker                                                                  |
 |                    |6 retired                                                                    |
+|--------------------|-----------------------------------------------------------------------------|
 |annual_income       |annual gross income                                                          |
 |debt_to_income      |ratio of existing liabilities to annual income                               |
 |market_value        |market value of property                                                     |
