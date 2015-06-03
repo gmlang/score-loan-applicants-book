@@ -54,4 +54,4 @@ Your objective is to conduct a thorough analysis of the data and recommend a mod
   - What is the maximum proportion of good customers that can be granted loans while ensuring that x% of the bad customers are correctly identified.
   - What is the maximum proportion of the overall population that can be granted loans while ensuring that x% of the bad customers are correctly identified.
   
-In subsequent chapters, I'll walk you through the complete analysis step by step, addressing these questions along the way. But first, let's set up the tools.
+In subsequent chapters, I'll walk you through the complete analysis step by step, addressing these questions along the way. But first, let's set up the tools we'll be using for the analysis.

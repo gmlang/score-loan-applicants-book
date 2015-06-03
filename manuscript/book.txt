@@ -1,3 +1,4 @@
 00-intro.md
 01-set-up.md
-01-missing-value-treatment.md
+02-preliminary-analysis.md
+02-01-clean-data.md

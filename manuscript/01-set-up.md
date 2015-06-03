@@ -1,11 +1,3 @@
----
-title: "01-set-up"
-author: "gmlang"
-date: "April 3, 2015"
-output: md_document
-
----
-
 # Set up
 
 1. Install [R](http://www.r-project.org) and [Rstudio](http://www.rstudio.com/products/rstudio/download/).
