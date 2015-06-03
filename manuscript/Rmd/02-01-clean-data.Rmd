@@ -8,13 +8,14 @@ output: md_document
 ## Clean Data
 
 Create a directory called *score-loan-applicants* under your home directory. Use it as the project folder that will store all files related with our analysis, which include code, processed data, intermediate results, figures, and etc.
-A> {linenos=off}
+A>
 ```{r}
 proj_path = "~/score-loan-applicants"
 dir.create(proj_path, showWarnings=FALSE)
 ```
 
 Load the `ezplot` and `loans` libraries. The former allows us to make nice looking ggplot2 plots easily. The latter contains the unsecured personal loans (upl) dataset that we'll analyze. 
+A>
 ```{r}
 library(ezplot)
 library(loans)
@@ -47,11 +48,9 @@ pct_good_n_bad = function(dat, yvar, xvar = ""){
 Next, we use it to calculate the percent of good and bad customers in the upl dataset, and we show the result in a bar chart.
 ```{r, target, fig.path='images/', fig.cap=""}
 tbl = pct_good_n_bad(upl, "bad")
-
 # append a column of label positions to tbl
 f = add_bar_label_pos(tbl)
 tbl = f("bad", "percent", vpos=0.04)
-
 # draw bar plot
 plt = mk_barplot(tbl)
 p = plt("bad", "percent", fillby="bad", xlab="0 - Good, 1 - Bad", legend=F,
@@ -109,7 +108,7 @@ for (var in varsNA) {
                 barlab_use_pct=T, barlab_size=4)
         p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
         print(p)
-#         cat('\r\n\r\n')
+        cat('\r\n\r\n')
 }
 ```
 

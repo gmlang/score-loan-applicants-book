@@ -74,9 +74,11 @@ Next, we use it to calculate the percent of good and bad customers in the upl da
 A>
 ```r
 tbl = pct_good_n_bad(upl, "bad")
+
 # append a column of label positions to tbl
 f = add_bar_label_pos(tbl)
 tbl = f("bad", "percent", vpos=0.04)
+
 # draw bar plot
 plt = mk_barplot(tbl)
 p = plt("bad", "percent", fillby="bad", xlab="0 - Good, 1 - Bad", legend=F,
