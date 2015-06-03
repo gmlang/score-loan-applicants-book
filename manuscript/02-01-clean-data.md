@@ -22,6 +22,7 @@ A>
 ```r
 str(upl, vec.len=3)
 ```
+
 A> {linenos=off}
 ```
 'data.frame':	7250 obs. of  17 variables:
@@ -99,6 +100,7 @@ iv_cat = c("bankruptcy", "purpose", "exist_customer", "unspent_convictions",
 for (var in iv_cat) upl[[var]] = as.character(upl[[var]])
 str(upl[, iv_cat], vec.len=3)
 ```
+
 A> {linenos=off}
 ```
 'data.frame':	7250 obs. of  10 variables:
@@ -132,6 +134,7 @@ pctNA = paste0(round(pctNA*100, 2), "%")
 pct_missing = data.frame(vars = varsNA, percent_missing = pctNA)
 print(pct_missing)
 ```
+
 A> {linenos=off}
 ```
             vars percent_missing
@@ -180,10 +183,12 @@ A>
 ```r
 print(varsNA)
 ```
+
 A> {linenos=off}
 ```
 [1] "purpose"        "debt_to_income" "market_value"   "bankruptcy"    
 ```
+
 A>
 ```r
 upl$market_value[upl$own_property == 0 & is.na(upl$market_value)] = 0
@@ -199,6 +204,7 @@ for (var in varsNA) {
         }
 }
 ```
+
 A> {linenos=off}
 ```
 [1] "purpose"
