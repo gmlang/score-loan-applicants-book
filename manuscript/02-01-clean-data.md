@@ -162,14 +162,10 @@ for (var in varsNA) {
                 barlab_use_pct=T, barlab_size=4)
         p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
         print(p)
-        cat('\r\n\r\n')
 }
 ```
 
-![](images/target_in_missing-1.png) ![](images/target_in_missing-2.png) 
-
-![](images/target_in_missing-3.png) ![](images/target_in_missing-4.png) 
-
+![](images/target_in_missing-1.png) ![](images/target_in_missing-2.png) ![](images/target_in_missing-3.png) ![](images/target_in_missing-4.png) 
 
 We see the target variable has the same distribution (82% good - 18% bad) amongst customers with missing purpose as amongst all customers. This is also true for market_value. This implies that we may choose to ignore the missing values when looking at the individual effect of purpose or market_value on the target variable. However, the target has a distribution of 67% good vs. 33% bad amongst customers with missing bankruptcy info, which is different from its overall distribution. The same is true for debt_to_income. This implies that we may not ignore the effect of missing values in bankruptcy or debt_to_income on the target.
 

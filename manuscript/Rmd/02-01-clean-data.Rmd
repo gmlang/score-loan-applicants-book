@@ -119,7 +119,6 @@ for (var in varsNA) {
                 barlab_use_pct=T, barlab_size=4)
         p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
         print(p)
-        cat('\r\n\r\n')
 }
 ```
 

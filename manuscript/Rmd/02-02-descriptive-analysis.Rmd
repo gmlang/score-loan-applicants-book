@@ -78,7 +78,6 @@ for (var in iv_con) {
                 main = paste("Distribution of", var), legend=F)
         p = scale_axis(p, "y", use_comma=T)
         print(p)
-#         cat('\r\n\r\n')
 }
 ```
 
