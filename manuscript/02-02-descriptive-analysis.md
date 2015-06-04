@@ -10,165 +10,61 @@ file_path = file.path(data_path, 'cleaned-01.rda')
 load(file_path)
 ```
 
-Next, let's explore the relationships between the categorical predictors and the target.
+Next, let's explore the relationships between the categorical predictors and the target. Because the target is binary (bad vs. good), we only need to look at how  bad customers are distributed across the different levels of a given categorical predictor. We first create a helper function that takes a categorical predictor as an input parameter and calculates the percent of bad customers for each of its levels.
+
+A>
+```r
+calc_pct_bad = function(dat, var) {
+        # dat: a data frame
+        # yvar, xvar: string, names of variables on dat
+        tbl = table(dat$bad, dat[[var]])
+        pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
+        pct = data.frame(pct)
+        pct = cbind(row.names(pct), pct)
+        names(pct) = c(var, "pct_bad")
+        row.names(pct) = NULL
+        pct
+}
+# example
+calc_pct_bad(upl, iv_cat[1])
+```
+
+A> {linenos=off}
+```
+  bankruptcy pct_bad
+1          0 0.17461
+2          1 0.15789
+3    unknown 0.33333
+```
+
+Now we can draw bar chart to display these percentages of bad customers.
 
 A>
 ```r
 for (var in iv_cat) {
-        tbl = table(upl$bad, upl[[var]])
-        pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
-        pct = data.frame(pct)
-        pct = cbind(row.names(pct), pct)
-        names(pct) = c(var, "percent_bad")
-        row.names(pct) = NULL
-        # print table
-        tbl_pct = pct
-        tbl_pct$percent_bad = paste0(round(pct$percent_bad, 4) * 100, "%")
-        print(kable(tbl_pct, row.names = FALSE, format = "pandoc", 
-                    caption=var))
-        cat("\n")
-        # print bar plot of percent of bad amongst different predictor levels
-        plt = mk_barplot(pct)
-        p = plt(var, "percent_bad", fillby=var, xlab=var, legend=F,
-                main=paste("Percent of Bad customers \nat each level of", var))
-        p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.4, pct_jump=0.05)
+        tbl = calc_pct_bad(upl, var)
+        # append a column of label positions to tbl
+        f = add_bar_label_pos(tbl)
+        tbl = f(var, "pct_bad", vpos=0.02)
+        # draw bar plot
+        plt = mk_barplot(tbl)
+        p = plt(var, "pct_bad", fillby=var, xlab=var, legend=F,
+                main=paste("Percent of bad customers in", var),
+                barlab="pct_bad", barlab_at_top=T, barlab_use_pct=T, 
+                barlab_size=4)
+        p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
         print(p)
         cat("\n")
 }
 ```
 
-```
-Table: bankruptcy
-
-bankruptcy   percent_bad 
------------  ------------
-0            17.46%      
-1            15.79%      
-unknown      33.33%      
-```
-
-![](images/target_vs_cat-1.png) 
-
-```
-Table: purpose
-
-purpose   percent_bad 
---------  ------------
-0         17.6%       
-1         19.59%      
-unknown   17.41%      
-```
-
-![](images/target_vs_cat-2.png) 
-
-```
-Table: exist_customer
-
-exist_customer   percent_bad 
----------------  ------------
-0                17.75%      
-1                18.74%      
-```
-
-![](images/target_vs_cat-3.png) 
-
-```
-Table: unspent_convictions
-
-unspent_convictions   percent_bad 
---------------------  ------------
-0                     18.05%      
-1                     18.43%      
-```
-
-![](images/target_vs_cat-4.png) 
-
-```
-
-
-
-Table: conviction
-
-conviction   percent_bad 
------------  ------------
-0            17.89%      
-1            31.13%      
-```
-
+![](images/target_vs_cat-1.png) ![](images/target_vs_cat-2.png) 
+![](images/target_vs_cat-3.png) ![](images/target_vs_cat-4.png) 
 ![](images/target_vs_cat-5.png) 
-
-```
-
-
-
-Table: repossess
-
-repossess   percent_bad 
-----------  ------------
-0           18.39%      
-1           8.48%       
-```
-
 ![](images/target_vs_cat-6.png) 
-
-```
-
-
-
-Table: own_property
-
-own_property   percent_bad 
--------------  ------------
-0              4.74%       
-1              27.05%      
-```
-
 ![](images/target_vs_cat-7.png) 
-
-```
-
-
-
-Table: late_repayments
-
-late_repayments   percent_bad 
-----------------  ------------
-0                 14.68%      
-1                 33.11%      
-```
-
 ![](images/target_vs_cat-8.png) 
-
-```
-
-
-
-Table: marital
-
-marital   percent_bad 
---------  ------------
-0         19.52%      
-1         17.11%      
-```
-
 ![](images/target_vs_cat-9.png) 
-
-```
-
-
-
-Table: employment
-
-employment   percent_bad 
------------  ------------
-1            18.34%      
-2            16.43%      
-3            18.08%      
-4            16.77%      
-5            15.56%      
-6            20.06%      
-```
-
 ![](images/target_vs_cat-10.png) 
 
 These plots suggest that the categorical predictors can be classified into three groups in terms of their potential predictive power:
@@ -179,7 +75,7 @@ These plots suggest that the categorical predictors can be classified into three
 
 We also examine the relationships between the continuous predictors and the target.
 
-
+A>
 ```r
 iv_con = c("debt_to_income", "market_value", "credit_line_age", 
            "credit_applications", "annual_income", "age")
@@ -195,21 +91,16 @@ for (var in iv_con) {
 ```
 
 ![](images/target_vs_con-1.png) 
-
 ![](images/target_vs_con-2.png) 
-
 ![](images/target_vs_con-3.png) 
-
 ![](images/target_vs_con-4.png) 
-
 ![](images/target_vs_con-5.png) 
-
 ![](images/target_vs_con-6.png) 
 
 
 We see the distributions of debt_to_income and annual_income are heavily right skewed, so we take the log transform of debt_to_income and annual_income and replot.
 
-
+A>
 ```r
 upl = within(upl, {
              log_debt_to_income = log(debt_to_income)
@@ -233,7 +124,7 @@ These plots suggest that the continuous predictors can also be classified into t
 
 We also observe that the bulk of zero market values belong to the good customers, while only a few bad customers have zero market values. This suggests owning property (market value > 0) is possibly a strong predictor of a bad customer, which we already discovered when looking at the distribution of own_property just a moment ago. Therefore, it's a good idea to create a categorical version of market_value by binning its values into different intervals based on its distribution.
 
-
+A>
 ```r
 summary(upl$market_value)
 ```
@@ -268,37 +159,16 @@ We then plot the distribution of bad customers in market_value_cat.
 ```r
 # calculate the pct of bad customers 
 var = "market_value_cat"
-tbl = table(upl$bad, upl[[var]])
-pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
-pct = data.frame(pct)
-pct = cbind(row.names(pct), pct)
-names(pct) = c(var, "percent_bad")
-row.names(pct) = NULL
-# print table
-tbl_pct = pct
-tbl_pct$percent_bad = format_as_pct(tbl_pct$percent_bad)
-print(kable(tbl_pct, row.names = FALSE, format = "pandoc", caption=var))
-```
-
-```
-
-
-Table: market_value_cat
-
-market_value_cat          percent_bad 
-------------------------  ------------
-$0                        4.74%       
-$1 - $910,600             39.5%       
-$910,601 - $1,290,000     30.74%      
-$1,290,001 - $2,680,000   16.88%      
-```
-
-```r
+tbl = calc_pct_bad(upl, var)
+# append a column of label positions to tbl
+f = add_bar_label_pos(tbl)
+tbl = f(var, "pct_bad", vpos=0.02)
 # draw bar plot
-plt = mk_barplot(pct)
-p = plt(var, "percent_bad", fillby=var, xlab=var, legend=F, 
-        main=paste("Percent of Bad customers \nat each level of", var))
-p = scale_axis(p, "y", use_pct=T, pct_max=0.5, pct_jump=0.1)
+plt = mk_barplot(tbl)
+p = plt(var, "pct_bad", fillby=var, xlab=var, legend=F,
+        main=paste("Percent of bad customers in", var), barlab="pct_bad",
+        barlab_at_top=T, barlab_use_pct=T, barlab_size=4)
+p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
 p = rotate_axis_text(p, 15)
 print(p)
 ```

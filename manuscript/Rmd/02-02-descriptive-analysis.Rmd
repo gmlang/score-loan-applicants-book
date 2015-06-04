@@ -23,27 +23,39 @@ file_path = file.path(data_path, 'cleaned-01.rda')
 load(file_path)
 ```
 
-Next, let's explore the relationships between the categorical predictors and the target.
+Next, let's explore the relationships between the categorical predictors and the target. Because the target is binary (bad vs. good), we only need to look at how  bad customers are distributed across the different levels of a given categorical predictor. We first create a helper function that takes a categorical predictor as an input parameter and calculates the percent of bad customers for each of its levels.
 
-```{r, target_vs_cat, fig.path='images/', fig.cap=""}
-for (var in iv_cat) {
-        tbl = table(upl$bad, upl[[var]])
+```{r}
+calc_pct_bad = function(dat, var) {
+        # dat: a data frame
+        # yvar, xvar: string, names of variables on dat
+        tbl = table(dat$bad, dat[[var]])
         pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
         pct = data.frame(pct)
         pct = cbind(row.names(pct), pct)
-        names(pct) = c(var, "percent_bad")
+        names(pct) = c(var, "pct_bad")
         row.names(pct) = NULL
-        # print table
-        tbl_pct = pct
-        tbl_pct$percent_bad = paste0(round(pct$percent_bad, 4) * 100, "%")
-        print(kable(tbl_pct, row.names = FALSE, format = "pandoc", 
-                    caption=var))
-        cat("\n")
-        # print bar plot of percent of bad amongst different predictor levels
-        plt = mk_barplot(pct)
-        p = plt(var, "percent_bad", fillby=var, xlab=var, legend=F,
-                main=paste("Percent of Bad customers \nat each level of", var))
-        p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.4, pct_jump=0.05)
+        pct
+}
+# example
+calc_pct_bad(upl, iv_cat[1])
+```
+
+Now we can draw bar chart to display these percentages of bad customers.
+
+```{r, target_vs_cat, fig.path='images/', fig.cap=""}
+for (var in iv_cat) {
+        tbl = calc_pct_bad(upl, var)
+        # append a column of label positions to tbl
+        f = add_bar_label_pos(tbl)
+        tbl = f(var, "pct_bad", vpos=0.02)
+        # draw bar plot
+        plt = mk_barplot(tbl)
+        p = plt(var, "pct_bad", fillby=var, xlab=var, legend=F,
+                main=paste("Percent of bad customers in", var),
+                barlab="pct_bad", barlab_at_top=T, barlab_use_pct=T, 
+                barlab_size=4)
+        p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
         print(p)
         cat("\n")
 }
@@ -110,21 +122,16 @@ We then plot the distribution of bad customers in market_value_cat.
 ```{r, target_vs_market_value_cat, fig.path='images/', fig.cap=""}
 # calculate the pct of bad customers 
 var = "market_value_cat"
-tbl = table(upl$bad, upl[[var]])
-pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
-pct = data.frame(pct)
-pct = cbind(row.names(pct), pct)
-names(pct) = c(var, "percent_bad")
-row.names(pct) = NULL
-# print table
-tbl_pct = pct
-tbl_pct$percent_bad = format_as_pct(tbl_pct$percent_bad)
-print(kable(tbl_pct, row.names = FALSE, format = "pandoc", caption=var))
+tbl = calc_pct_bad(upl, var)
+# append a column of label positions to tbl
+f = add_bar_label_pos(tbl)
+tbl = f(var, "pct_bad", vpos=0.02)
 # draw bar plot
-plt = mk_barplot(pct)
-p = plt(var, "percent_bad", fillby=var, xlab=var, legend=F, 
-        main=paste("Percent of Bad customers \nat each level of", var))
-p = scale_axis(p, "y", use_pct=T, pct_max=0.5, pct_jump=0.1)
+plt = mk_barplot(tbl)
+p = plt(var, "pct_bad", fillby=var, xlab=var, legend=F,
+        main=paste("Percent of bad customers in", var), barlab="pct_bad",
+        barlab_at_top=T, barlab_use_pct=T, barlab_size=4)
+p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
 p = rotate_axis_text(p, 15)
 print(p)
 ```
