@@ -2,7 +2,7 @@
 
 First, let's load the cleaned data.
 
-A>
+
 ```r
 proj_path = "~/score-loan-applicants"
 data_path = file.path(proj_path, 'data')
@@ -12,7 +12,7 @@ load(file_path)
 
 Next, let's explore the relationships between the categorical predictors and the target. Because the target is binary (bad vs. good), we only need to look at how  bad customers are distributed across the different levels of a given categorical predictor. We first create a helper function that takes a categorical predictor as an input parameter and calculates the percent of bad customers for each of its levels.
 
-A>
+
 ```r
 calc_pct_bad = function(dat, var) {
         # dat: a data frame
@@ -29,7 +29,6 @@ calc_pct_bad = function(dat, var) {
 calc_pct_bad(upl, iv_cat[1])
 ```
 
-A> {linenos=off}
 ```
   bankruptcy pct_bad
 1          0 0.17461
@@ -39,7 +38,7 @@ A> {linenos=off}
 
 Now we can draw bar chart to display these percentages of bad customers.
 
-A>
+
 ```r
 for (var in iv_cat) {
         tbl = calc_pct_bad(upl, var)
@@ -54,18 +53,10 @@ for (var in iv_cat) {
                 barlab_size=4)
         p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
         print(p)
-        cat("\n")
 }
 ```
 
-![](images/target_vs_cat-1.png) ![](images/target_vs_cat-2.png) 
-![](images/target_vs_cat-3.png) ![](images/target_vs_cat-4.png) 
-![](images/target_vs_cat-5.png) 
-![](images/target_vs_cat-6.png) 
-![](images/target_vs_cat-7.png) 
-![](images/target_vs_cat-8.png) 
-![](images/target_vs_cat-9.png) 
-![](images/target_vs_cat-10.png) 
+![](images/target_vs_cat-1.png) ![](images/target_vs_cat-2.png) ![](images/target_vs_cat-3.png) ![](images/target_vs_cat-4.png) ![](images/target_vs_cat-5.png) ![](images/target_vs_cat-6.png) ![](images/target_vs_cat-7.png) ![](images/target_vs_cat-8.png) ![](images/target_vs_cat-9.png) ![](images/target_vs_cat-10.png) 
 
 These plots suggest that the categorical predictors can be classified into three groups in terms of their potential predictive power:
 
@@ -75,7 +66,7 @@ These plots suggest that the categorical predictors can be classified into three
 
 We also examine the relationships between the continuous predictors and the target.
 
-A>
+
 ```r
 iv_con = c("debt_to_income", "market_value", "credit_line_age", 
            "credit_applications", "annual_income", "age")
@@ -86,21 +77,15 @@ for (var in iv_con) {
                 main = paste("Distribution of", var), legend=F)
         p = scale_axis(p, "y", use_comma=T)
         print(p)
-        cat('\r\n\r\n')
+#         cat('\r\n\r\n')
 }
 ```
 
-![](images/target_vs_con-1.png) 
-![](images/target_vs_con-2.png) 
-![](images/target_vs_con-3.png) 
-![](images/target_vs_con-4.png) 
-![](images/target_vs_con-5.png) 
-![](images/target_vs_con-6.png) 
-
+![](images/target_vs_con-1.png) ![](images/target_vs_con-2.png) ![](images/target_vs_con-3.png) ![](images/target_vs_con-4.png) ![](images/target_vs_con-5.png) ![](images/target_vs_con-6.png) 
 
 We see the distributions of debt_to_income and annual_income are heavily right skewed, so we take the log transform of debt_to_income and annual_income and replot.
 
-A>
+
 ```r
 upl = within(upl, {
              log_debt_to_income = log(debt_to_income)
@@ -124,7 +109,7 @@ These plots suggest that the continuous predictors can also be classified into t
 
 We also observe that the bulk of zero market values belong to the good customers, while only a few bad customers have zero market values. This suggests owning property (market value > 0) is possibly a strong predictor of a bad customer, which we already discovered when looking at the distribution of own_property just a moment ago. Therefore, it's a good idea to create a categorical version of market_value by binning its values into different intervals based on its distribution.
 
-A>
+
 ```r
 summary(upl$market_value)
 ```

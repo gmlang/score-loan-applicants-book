@@ -57,7 +57,6 @@ for (var in iv_cat) {
                 barlab_size=4)
         p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
         print(p)
-        cat("\n")
 }
 ```
 
@@ -79,7 +78,7 @@ for (var in iv_con) {
                 main = paste("Distribution of", var), legend=F)
         p = scale_axis(p, "y", use_comma=T)
         print(p)
-        cat('\r\n\r\n')
+#         cat('\r\n\r\n')
 }
 ```
 
