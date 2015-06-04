@@ -109,7 +109,6 @@ summary(upl$market_value)
 a = cut(upl$market_value, c(0, 1, 910600, 1290000, 2680000), right=F)
 levels(a) = c("$0", "$1 - $910,600", "$910,601 - $1,290,000", 
               "$1,290,001 - $2,680,000")
-table(a)
 upl$market_value_cat = a
 # update iv_cat 
 iv_cat = c(iv_cat, "market_value_cat")

@@ -2,7 +2,7 @@
 
 First, let's load the cleaned data.
 
-
+A>
 ```r
 proj_path = "~/score-loan-applicants"
 data_path = file.path(proj_path, 'data')
@@ -12,7 +12,7 @@ load(file_path)
 
 Next, let's explore the relationships between the categorical predictors and the target. Because the target is binary (bad vs. good), we only need to look at how  bad customers are distributed across the different levels of a given categorical predictor. We first create a helper function that takes a categorical predictor as an input parameter and calculates the percent of bad customers for each of its levels.
 
-
+A>
 ```r
 calc_pct_bad = function(dat, var) {
         # dat: a data frame
@@ -29,6 +29,7 @@ calc_pct_bad = function(dat, var) {
 calc_pct_bad(upl, iv_cat[1])
 ```
 
+A> {linenos=off}
 ```
   bankruptcy pct_bad
 1          0 0.17461
@@ -38,7 +39,7 @@ calc_pct_bad(upl, iv_cat[1])
 
 Now we can draw bar chart to display these percentages of bad customers.
 
-
+A>
 ```r
 for (var in iv_cat) {
         tbl = calc_pct_bad(upl, var)
@@ -66,7 +67,7 @@ These plots suggest that the categorical predictors can be classified into three
 
 We also examine the relationships between the continuous predictors and the target.
 
-
+A>
 ```r
 iv_con = c("debt_to_income", "market_value", "credit_line_age", 
            "credit_applications", "annual_income", "age")
@@ -85,7 +86,7 @@ for (var in iv_con) {
 
 We see the distributions of debt_to_income and annual_income are heavily right skewed, so we take the log transform of debt_to_income and annual_income and replot.
 
-
+A>
 ```r
 upl = within(upl, {
              log_debt_to_income = log(debt_to_income)
@@ -109,30 +110,22 @@ These plots suggest that the continuous predictors can also be classified into t
 
 We also observe that the bulk of zero market values belong to the good customers, while only a few bad customers have zero market values. This suggests owning property (market value > 0) is possibly a strong predictor of a bad customer, which we already discovered when looking at the distribution of own_property just a moment ago. Therefore, it's a good idea to create a categorical version of market_value by binning its values into different intervals based on its distribution.
 
-
+A>
 ```r
 summary(upl$market_value)
 ```
 
+A> {linenos=off}
 ```
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
       0       0  856000  730000 1290000 2680000 
 ```
 
+A>
 ```r
 a = cut(upl$market_value, c(0, 1, 910600, 1290000, 2680000), right=F)
 levels(a) = c("$0", "$1 - $910,600", "$910,601 - $1,290,000", 
               "$1,290,001 - $2,680,000")
-table(a)
-```
-
-```
-a
-                     $0           $1 - $910,600   $910,601 - $1,290,000 $1,290,001 - $2,680,000 
-                   2914                    1043                    1480                    1813 
-```
-
-```r
 upl$market_value_cat = a
 # update iv_cat 
 iv_cat = c(iv_cat, "market_value_cat")
@@ -140,7 +133,7 @@ iv_cat = c(iv_cat, "market_value_cat")
 
 We then plot the distribution of bad customers in market_value_cat.
 
-
+A>
 ```r
 # calculate the pct of bad customers 
 var = "market_value_cat"
@@ -164,7 +157,7 @@ We see that market_value_cat is potentially a strong predictor.
 
 Finally, we collect the predictors into strong, weak and none groups as above discussed so that we can easily access them for future analysis.
 
-
+A>
 ```r
 # categorical vars
 iv_cat_strong = c("bankruptcy", "conviction", "repossess", "own_property", 
