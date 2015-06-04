@@ -1,22 +1,9 @@
----
-title: "02-02-descriptive-analysis"
-author: "gmlang"
-date: "April 16, 2015"
-output: md_document
----
-
-```{r setup}
-library(knitr)
-opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
-               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'png')
-options(width = 100, scipen = 5, digits = 5)
-```
-
 ## Descriptive Analysis
 
 First, let's load the cleaned data.
 
-```{r}
+A>
+```r
 proj_path = "~/score-loan-applicants"
 data_path = file.path(proj_path, 'data')
 file_path = file.path(data_path, 'cleaned-01.rda')
@@ -25,7 +12,8 @@ load(file_path)
 
 Next, let's explore the relationships between the categorical predictors and the target.
 
-```{r, target_vs_cat, fig.path='images/', fig.cap=""}
+A>
+```r
 for (var in iv_cat) {
         tbl = table(upl$bad, upl[[var]])
         pct = tbl["1", ] / (tbl["0", ] + tbl["1", ])
@@ -49,6 +37,140 @@ for (var in iv_cat) {
 }
 ```
 
+```
+Table: bankruptcy
+
+bankruptcy   percent_bad 
+-----------  ------------
+0            17.46%      
+1            15.79%      
+unknown      33.33%      
+```
+
+![](images/target_vs_cat-1.png) 
+
+```
+Table: purpose
+
+purpose   percent_bad 
+--------  ------------
+0         17.6%       
+1         19.59%      
+unknown   17.41%      
+```
+
+![](images/target_vs_cat-2.png) 
+
+```
+Table: exist_customer
+
+exist_customer   percent_bad 
+---------------  ------------
+0                17.75%      
+1                18.74%      
+```
+
+![](images/target_vs_cat-3.png) 
+
+```
+Table: unspent_convictions
+
+unspent_convictions   percent_bad 
+--------------------  ------------
+0                     18.05%      
+1                     18.43%      
+```
+
+![](images/target_vs_cat-4.png) 
+
+```
+
+
+
+Table: conviction
+
+conviction   percent_bad 
+-----------  ------------
+0            17.89%      
+1            31.13%      
+```
+
+![](images/target_vs_cat-5.png) 
+
+```
+
+
+
+Table: repossess
+
+repossess   percent_bad 
+----------  ------------
+0           18.39%      
+1           8.48%       
+```
+
+![](images/target_vs_cat-6.png) 
+
+```
+
+
+
+Table: own_property
+
+own_property   percent_bad 
+-------------  ------------
+0              4.74%       
+1              27.05%      
+```
+
+![](images/target_vs_cat-7.png) 
+
+```
+
+
+
+Table: late_repayments
+
+late_repayments   percent_bad 
+----------------  ------------
+0                 14.68%      
+1                 33.11%      
+```
+
+![](images/target_vs_cat-8.png) 
+
+```
+
+
+
+Table: marital
+
+marital   percent_bad 
+--------  ------------
+0         19.52%      
+1         17.11%      
+```
+
+![](images/target_vs_cat-9.png) 
+
+```
+
+
+
+Table: employment
+
+employment   percent_bad 
+-----------  ------------
+1            18.34%      
+2            16.43%      
+3            18.08%      
+4            16.77%      
+5            15.56%      
+6            20.06%      
+```
+
+![](images/target_vs_cat-10.png) 
+
 These plots suggest that the categorical predictors can be classified into three groups in terms of their potential predictive power:
 
 * Strong: bankruptcy, conviction, repossess, own_property, late_repayments
@@ -57,7 +179,8 @@ These plots suggest that the categorical predictors can be classified into three
 
 We also examine the relationships between the continuous predictors and the target.
 
-```{r, target_vs_con, fig.path='images/', fig.cap=""}
+
+```r
 iv_con = c("debt_to_income", "market_value", "credit_line_age", 
            "credit_applications", "annual_income", "age")
 # make boxplots
@@ -71,9 +194,23 @@ for (var in iv_con) {
 }
 ```
 
+![](images/target_vs_con-1.png) 
+
+![](images/target_vs_con-2.png) 
+
+![](images/target_vs_con-3.png) 
+
+![](images/target_vs_con-4.png) 
+
+![](images/target_vs_con-5.png) 
+
+![](images/target_vs_con-6.png) 
+
+
 We see the distributions of debt_to_income and annual_income are heavily right skewed, so we take the log transform of debt_to_income and annual_income and replot.
 
-```{r, target_vs_con_log, fig.path='images/', fig.cap=""}
+
+```r
 upl = within(upl, {
              log_debt_to_income = log(debt_to_income)
              log_annual_income = log(annual_income) 
@@ -86,6 +223,8 @@ for (var in c("log_debt_to_income", "log_annual_income")) {
 }
 ```
 
+![](images/target_vs_con_log-1.png) ![](images/target_vs_con_log-2.png) 
+
 These plots suggest that the continuous predictors can also be classified into three groups in terms of their potential predictive power:
 
 * Strong: log_debt_to_income, log_annual_income, credit_line_age
@@ -94,12 +233,30 @@ These plots suggest that the continuous predictors can also be classified into t
 
 We also observe that the bulk of zero market values belong to the good customers, while only a few bad customers have zero market values. This suggests owning property (market value > 0) is possibly a strong predictor of a bad customer, which we already discovered when looking at the distribution of own_property just a moment ago. Therefore, it's a good idea to create a categorical version of market_value by binning its values into different intervals based on its distribution.
 
-```{r}
+
+```r
 summary(upl$market_value)
+```
+
+```
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0       0  856000  730000 1290000 2680000 
+```
+
+```r
 a = cut(upl$market_value, c(0, 1, 910600, 1290000, 2680000), right=F)
 levels(a) = c("$0", "$1 - $910,600", "$910,601 - $1,290,000", 
               "$1,290,001 - $2,680,000")
 table(a)
+```
+
+```
+a
+                     $0           $1 - $910,600   $910,601 - $1,290,000 $1,290,001 - $2,680,000 
+                   2914                    1043                    1480                    1813 
+```
+
+```r
 upl$market_value_cat = a
 # update iv_cat 
 iv_cat = c(iv_cat, "market_value_cat")
@@ -107,7 +264,8 @@ iv_cat = c(iv_cat, "market_value_cat")
 
 We then plot the distribution of bad customers in market_value_cat.
 
-```{r, target_vs_market_value_cat, fig.path='images/', fig.cap=""}
+
+```r
 # calculate the pct of bad customers 
 var = "market_value_cat"
 tbl = table(upl$bad, upl[[var]])
@@ -120,6 +278,22 @@ row.names(pct) = NULL
 tbl_pct = pct
 tbl_pct$percent_bad = format_as_pct(tbl_pct$percent_bad)
 print(kable(tbl_pct, row.names = FALSE, format = "pandoc", caption=var))
+```
+
+```
+
+
+Table: market_value_cat
+
+market_value_cat          percent_bad 
+------------------------  ------------
+$0                        4.74%       
+$1 - $910,600             39.5%       
+$910,601 - $1,290,000     30.74%      
+$1,290,001 - $2,680,000   16.88%      
+```
+
+```r
 # draw bar plot
 plt = mk_barplot(pct)
 p = plt(var, "percent_bad", fillby=var, xlab=var, legend=F, 
@@ -129,11 +303,14 @@ p = rotate_axis_text(p, 15)
 print(p)
 ```
 
+![](images/target_vs_market_value_cat-1.png) 
+
 We see that market_value_cat is potentially a strong predictor.
 
 Finally, we collect the predictors into strong, weak and none groups as above discussed so that we can easily access them for future analysis.
 
-```{r}
+
+```r
 # categorical vars
 iv_cat_strong = c("bankruptcy", "conviction", "repossess", "own_property", 
                   "late_repayments", "market_value_cat")

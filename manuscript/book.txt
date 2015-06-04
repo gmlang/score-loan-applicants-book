@@ -2,3 +2,4 @@
 01-set-up.md
 02-preliminary-analysis.md
 02-01-clean-data.md
+02-02-descriptive-analysis.md
