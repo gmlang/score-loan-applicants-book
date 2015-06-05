@@ -14,7 +14,8 @@ Next, we write a function to calculate the Weight of Evidence (WoE) and Informat
 
 A>
 ```r
-WoE_n_IV = function(dat, yvar, xvar) {
+
+	WoE_n_IV = function(dat, yvar, xvar) {
         # dat: data frame
         # yvar, xvar: strings
         woe = iv = NULL
@@ -66,7 +67,7 @@ WoE_n_IV = function(dat, yvar, xvar) {
         names(out)[1] = xvar
         rownames(out) = NULL
         out
-}
+	}
 ```
 
 Now, armed with this function, we can go ahead calculating the Weight of Evidence and Information Value for each predictor.
@@ -86,7 +87,7 @@ for (i in 1:length(predictors)) {
 }
 ```
 
-A> {linenos=off}
+
 ```
 Table: bankruptcy
 
@@ -317,7 +318,7 @@ IV$predictive_power[0.5 <= IV$IV] = "Too good to be true"
 kable(IV, row.names = FALSE, format = "pandoc", caption="Information Value")
 ```
 
-A>
+```
 Table: Information Value
 
 predictor                   IV  predictive_power    
@@ -339,6 +340,7 @@ credit_line_age        0.20600  Medium
 market_value           0.47746  Strong              
 credit_applications    0.13396  Medium              
 age                    0.00268  Useless             
+```
 
 We see that while many of the conclusions are consistence with what we got using the visual aids in the last section, there're some discrepancies. For example, the distribution plot showed bankruptcy is a strong predictor, but the IV says it's a weak predictor. Remember that neither distribution plots or IVs are definitively. Their purpose is to help us be smart about variable selection when we build models, which we'll start doing in the next section. For now, let's collect the predictors into different groups based on the potential predictive power suggested by the Information Values.
 
