@@ -1,0 +1,130 @@
+---
+title: "02-03-WoE-n-IV"
+author: "gmlang"
+date: "April 3, 2015"
+output: pdf_document
+---
+
+```{r setup}
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'png')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+## Weight of Evidence and Information Value
+
+First, let's load the data we saved from the previous section.
+
+```{r}
+proj_path = "~/score-loan-applicants"
+data_path = file.path(proj_path, 'data')
+file_path = file.path(data_path, 'cleaned-02.rda')
+load(file_path)
+```
+
+Next, we write a function to calculate the Weight of Evidence (WoE) and Information Value (IV) of any predictor given a binary target. The WoE and IV, like the distribution plots in the last section, will help us identify potential predicitve or useless predcitors. You can read more about them and see how they are defined mathematically at this [website](http://documentation.statsoft.com/STATISTICAHelp.aspx?path=WeightofEvidence/WeightofEvidenceWoEIntroductoryOverview).
+
+```{r}
+WoE_n_IV = function(dat, yvar, xvar) {
+        # dat: data frame
+        # yvar, xvar: strings
+        woe = iv = NULL
+        if (class(dat[[xvar]]) == "factor") {
+                tbl = table(dat[[yvar]], dat[[xvar]])
+                good = drop(tbl["0", ])
+                bad = drop(tbl["1", ])
+                # calculate percent of good and bad customers
+                good_pct = good / sum(good)
+                bad_pct = bad  / sum(bad)
+                # calculate WOE and IV for each level
+                woe = log(good_pct / bad_pct)
+                iv = (good_pct - bad_pct) * woe                
+        } 
+        if (class(dat[[xvar]]) == "numeric") {
+                # sort dat[[xvar]] 
+                sorted_idx = order(dat[[xvar]])
+                y = as.numeric(dat[[yvar]][sorted_idx])
+                # split the continuous xvar into 10 bins
+                ttl_num = length(dat[[xvar]])
+                bin = 10
+                n = ttl_num %/% bin
+                # count the number of good and bad for each bin
+                good = rep(0, bin)
+                bad = rep(0, bin)
+                for (i in 1:bin) { # calculate PSI for ith bin
+                        if (i != bin) {
+                                good[i] = sum(y[((i-1)*n+1):(n*i)])
+                                bad[i] = n-good[i]
+                        } else {
+                                good[i] = sum(y[((i-1)*n+1):ttl_num])
+                                bad[i] = ttl_num - n*(i-1) - good[i]
+                        }
+                }
+                # calculate WOE and IV for each bin
+                good_pct = good / sum(good)
+                bad_pct = bad / sum(bad)
+                woe = rep(0, bin)
+                iv = rep(0, bin) 
+                for (i in 1:bin) {
+                        woe[i] = log(good_pct[i] / bad_pct[i])
+                        iv[i] = (good_pct[i] - bad_pct[i]) * woe[i]
+                }
+                
+        }
+        # put results in a data frame and return it
+        out = data.frame(WOE = woe, IV = iv)
+        out = cbind(x=row.names(out), out)
+        names(out)[1] = xvar
+        rownames(out) = NULL
+        out
+}
+```
+
+Now, armed with this function, we can go ahead calculating the Weight of Evidence and Information Value for each predictor.
+
+```{r}
+predictors = c(iv_cat_strong, iv_cat_weak, iv_cat_none, iv_con_strong,
+               iv_con_weak, iv_con_none)
+IV = rep(0, length(predictors))
+for (i in 1:length(predictors)) {
+        var = predictors[i]
+        WOE_IV = WoE_n_IV(upl, "bad", var)
+        print(kable(WOE_IV, row.names = FALSE, format = "pandoc", caption=var))
+        cat("\n")        
+        # sum up the IV components for each predictor
+        IV[i] = sum(WOE_IV$IV)
+}
+```
+
+To judge a predictor's predictive power, people often use the following list as a guidance:
+
+* IV < 0.02 => Useless for prediction
+* 0.02 ~ 0.1 => Weak predictor
+* 0.1 ~ 0.3 => Medium predictor
+* 0.3 ~ 0.5 => Strong predictor
+* IV > 0.5 => Suspicious or too good to be true
+
+If we apply this list to our case, we get the following results.
+
+```{r}
+IV = data.frame(predictor = predictors, IV=IV)
+IV$predictive_power[IV$IV < 0.02] = "Useless"
+IV$predictive_power[0.02 <= IV$IV & IV$IV < 0.1] = "Weak"
+IV$predictive_power[0.1 <= IV$IV & IV$IV < 0.3] = "Medium"
+IV$predictive_power[0.3 <= IV$IV & IV$IV < 0.5] = "Strong"
+IV$predictive_power[0.5 <= IV$IV] = "Too good to be true"
+kable(IV, row.names = FALSE, format = "pandoc", caption="Information Value")
+```
+
+We see that while many of the conclusions are consistence with what we got using the visual aids in the last section, there're some discrepancies. For example, the distribution plot showed bankruptcy is a strong predictor, but the IV says it's a weak predictor. Remember that neither distribution plots or IVs are definitively. Their purpose is to help us be smart about variable selection when we build models, which we'll start doing in the next section. For now, let's collect the predictors into different groups based on the potential predictive power suggested by the Information Values.
+
+```{r}
+IV_none = as.character(with(IV, predictor[predictive_power=="Useless"]))
+IV_weak = as.character(with(IV, predictor[predictive_power=="Weak"]))
+IV_medium = as.character(with(IV, predictor[predictive_power=="Medium"]))
+IV_strong = as.character(with(IV, predictor[predictive_power=="Strong"]))
+IV_extra_strong = as.character(with(IV, predictor[predictive_power=="Too good to be true"]))
+save(IV_none, IV_weak, IV_medium, IV_strong, IV_extra_strong, 
+     file = file.path(data_path, 'cleaned-03.rda'))
+```

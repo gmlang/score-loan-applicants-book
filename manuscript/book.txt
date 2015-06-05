@@ -3,3 +3,4 @@
 02-preliminary-analysis.md
 02-01-clean-data.md
 02-02-descriptive-analysis.md
+02-03-WoE-n-IV.md
