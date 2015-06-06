@@ -146,7 +146,7 @@ for (i in 1:length(predictors)) {
 
 
 {title = "marital", width = "narrow"}
-|marital         WOE        IV
+|marital       |  WOE   |    IV  |
 |--------------|--------|--------|
 |0             |-0.09395| 0.00368|
 |1             |0.06731 | 0.00264|
@@ -198,18 +198,19 @@ for (i in 1:length(predictors)) {
 
 
 {title = "log_annual_income", width = "narrow"}
-|log_annual_income         WOE        IV
-|-----------------|--------|--------|
-1                    -0.72043   0.09396
-2                    -0.47547   0.03253
-3                    -0.23882   0.00677
-4                    -0.04327   0.00019
-5                     0.08986   0.00076
-6                     0.19104   0.00322
-7                     0.29784   0.00733
-8                     0.52776   0.02015
-9                     1.25775   0.07970
-10                    2.77344   0.22233
+|log_annual_income  |   WOE    |     IV   |
+|-------------------|----------|----------|
+|1                  |  -0.72043|   0.09396|
+|2                  |  -0.47547|   0.03253|
+|3                  |  -0.23882|   0.00677|
+|4                  |  -0.04327|   0.00019|
+|5                  |   0.08986|   0.00076|
+|6                  |   0.19104|   0.00322|
+|7                  |   0.29784|   0.00733|
+|8                  |   0.52776|   0.02015|
+|9                  |   1.25775|   0.07970|
+|10                 |   2.77344|   0.22233|
+|-------------------|----------|----------|
 
 
 {title = "credit_line_age", width = "narrow"}
@@ -229,49 +230,52 @@ for (i in 1:length(predictors)) {
 
 
 {title = "market_value", width = "narrow"}
-market_value         WOE        IV
-|--------------|--------|--------|
-1                1.12325   0.06755
-2                1.38167   0.09113
-3                1.41543   0.09427
-4                1.05118   0.06118
-5               -0.63825   0.06799
-6               -0.51247   0.03903
-7               -0.42235   0.02453
-8               -0.30453   0.01159
-9               -0.09039   0.00087
-10               0.51522   0.01934
+|market_value    |   WOE   |    IV   |
+|----------------|---------|---------|
+|1               | 1.12325 |  0.06755|
+|2               | 1.38167 |  0.09113|
+|3               | 1.41543 |  0.09427|
+|4               | 1.05118 |  0.06118|
+|5               |-0.63825 |  0.06799|
+|6               |-0.51247 |  0.03903|
+|7               |-0.42235 |  0.02453|
+|8               |-0.30453 |  0.01159|
+|9               |-0.09039 |  0.00087|
+|10              | 0.51522 |  0.01934|
+|----------------|---------|---------|
 
 
 {title = "credit_applications", width = "narrow"}
-credit_applications         WOE        IV
-|--------------|--------|--------|
-1                       0.25156   0.00538
-2                       0.44372   0.01493
-3                       0.35717   0.01017
-4                       0.34697   0.00966
-5                       0.21641   0.00407
-6                       0.15846   0.00226
-7                       0.22505   0.00438
-8                      -0.13993   0.00216
-9                      -0.34102   0.01496
-10                     -0.63100   0.06599
+|credit_applications   |     WOE  |     IV  |
+|----------------------|----------|---------|
+|1                     |  0.25156 |  0.00538|
+|2                     |  0.44372 |  0.01493|
+|3                     |  0.35717 |  0.01017|
+|4                     |  0.34697 |  0.00966|
+|5                     |  0.21641 |  0.00407|
+|6                     |  0.15846 |  0.00226|
+|7                     |  0.22505 |  0.00438|
+|8                     | -0.13993 |  0.00216|
+|9                     | -0.34102 |  0.01496|
+|10                    | -0.63100 |  0.06599|
+|----------------------|----------|---------|
 
 
 {title = "age", width = "narrow"}
-age         WOE        IV
-|--------------|--------|--------|
-1       0.03370   0.00011
-2      -0.07308   0.00056
-3      -0.03099   0.00010
-4      -0.01850   0.00003
-5      -0.06721   0.00047
-6       0.04735   0.00022
-7       0.00065   0.00000
-8       0.01369   0.00002
-9       0.00065   0.00000
-10      0.11204   0.00117
-```
+|age    |  WOE   |     IV   |
+|-------|--------|----------|
+|1      |0.03370 |   0.00011|
+|2      |-0.07308|   0.00056|
+|3      |-0.03099|   0.00010|
+|4      |-0.01850|   0.00003|
+|5      |-0.06721|   0.00047|
+|6      | 0.04735|   0.00022|
+|7      | 0.00065|   0.00000|
+|8      | 0.01369|   0.00002|
+|9      | 0.00065|   0.00000|
+|10     | 0.11204|   0.00117|
+|-------|--------|----------|
+
 
 To judge a predictor's predictive power, people often use the following list as a guidance:
 
@@ -294,31 +298,28 @@ IV$predictive_power[0.5 <= IV$IV] = "Too good to be true"
 kable(IV, row.names = FALSE, format = "pandoc", caption="Information Value")
 ```
 
+{title = "Table2: Information Value"}
+|predictor           |      IV  | predictive_power    |
+|--------------------|----------|---------------------|
+|bankruptcy          |   0.03528|  Weak               | 
+|conviction          |   0.00940|  Useless            |
+|repossess           |   0.01779|  Useless            | 
+|own_property        |   0.72777|  Too good to be true|
+|late_repayments     |   0.19779|  Medium             | 
+|market_value_cat    |   0.88906|  Too good to be true| 
+|purpose             |   0.00354|  Useless            | 
+|marital             |   0.00632|  Useless            | 
+|employment          |   0.00614|  Useless            | 
+|exist_customer      |   0.00100|  Useless            | 
+|unspent_convictions |   0.00004|  Useless            | 
+|log_debt_to_income  |   0.23204|  Medium             | 
+|log_annual_income   |   0.46695|  Strong             | 
+|credit_line_age     |   0.20600|  Medium             | 
+|market_value        |   0.47746|  Strong             | 
+|credit_applications |   0.13396|  Medium             | 
+|age                 |   0.00268|  Useless            | 
+|--------------------|----------|---------------------|
 
-A>{linenos=off}
-```
-Table: Information Value
-
-predictor                   IV  predictive_power    
---------------------  --------  --------------------
-bankruptcy             0.03528  Weak                
-conviction             0.00940  Useless             
-repossess              0.01779  Useless             
-own_property           0.72777  Too good to be true 
-late_repayments        0.19779  Medium              
-market_value_cat       0.88906  Too good to be true 
-purpose                0.00354  Useless             
-marital                0.00632  Useless             
-employment             0.00614  Useless             
-exist_customer         0.00100  Useless             
-unspent_convictions    0.00004  Useless             
-log_debt_to_income     0.23204  Medium              
-log_annual_income      0.46695  Strong              
-credit_line_age        0.20600  Medium              
-market_value           0.47746  Strong              
-credit_applications    0.13396  Medium              
-age                    0.00268  Useless             
-```
 
 We see that while many of the conclusions are consistence with what we got using the visual aids in the last section, there're some discrepancies. For example, the distribution plot showed bankruptcy is a strong predictor, but the IV says it's a weak predictor. Remember that neither distribution plots or IVs are definitively. Their purpose is to help us be smart about variable selection when we build models, which we'll start doing in the next section. For now, let's collect the predictors into different groups based on the potential predictive power suggested by the Information Values.
 
