@@ -90,6 +90,7 @@ print(p)
 
 We see that ~82% of the customers in the upl dataset are good while ~18% are bad. This imbalanced distribution of the target variable implies that we can't merely use the overall classification accuracy to measure model performance. For example, suppose we build a model, and it gives us an accuracy of 82%. We wouldn't consider it good here because we can achieve the same 82% accuracy without fitting any model. Just simply guess every customer is good. Because we want to build models that can correctly identify the bad customers, we really need to use more granular measures such as sensitivity and specificity to measure model performance. 
 
+
 Having looked at the target variable, now let's turn our attention to the predictors. We need to change the binary predictors to factors. But first, we change them to characters.
 
 A>
@@ -168,6 +169,7 @@ for (var in varsNA) {
 ![](images/target_in_missing-1.png) ![](images/target_in_missing-2.png) ![](images/target_in_missing-3.png) ![](images/target_in_missing-4.png) 
 
 We see the target variable has the same distribution (82% good - 18% bad) amongst customers with missing purpose as amongst all customers. This is also true for market_value. This implies that we may choose to ignore the missing values when looking at the individual effect of purpose or market_value on the target variable. However, the target has a distribution of 67% good vs. 33% bad amongst customers with missing bankruptcy info, which is different from its overall distribution. The same is true for debt_to_income. This implies that we may not ignore the effect of missing values in bankruptcy or debt_to_income on the target.
+
 
 Let's perform the following missing value treatments. For purpose and bankruptcy, because they are categorical, we change their missing values to "unkown". For debt_to_income, because it's continuous, we fill its missing values with the median of its non-missing values. For market_value, because it is related with own_property, we first fill its missing values based on the values of own_property. In particular, for customers with own_property = 0, we fill their missing market values with zeros. For customers with own_property = 1, we fill their missing market values with the median of the non-missing values. Note that we use median instead of mean. This is because a few large values in market_value will result a big mean, while the median is more immune to outliers' influence, and hence is a better measure of average in this case.
 

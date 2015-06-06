@@ -70,7 +70,6 @@ WoE_n_IV = function(dat, yvar, xvar) {
                         woe[i] = log(good_pct[i] / bad_pct[i])
                         iv[i] = (good_pct[i] - bad_pct[i]) * woe[i]
                 }
-                
         }
         # put results in a data frame and return it
         out = data.frame(WOE = woe, IV = iv)

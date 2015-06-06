@@ -14,8 +14,7 @@ Next, we write a function to calculate the Weight of Evidence (WoE) and Informat
 
 A>
 ```r
-
-	WoE_n_IV = function(dat, yvar, xvar) {
+WoE_n_IV = function(dat, yvar, xvar) {
         # dat: data frame
         # yvar, xvar: strings
         woe = iv = NULL
@@ -59,7 +58,6 @@ A>
                         woe[i] = log(good_pct[i] / bad_pct[i])
                         iv[i] = (good_pct[i] - bad_pct[i]) * woe[i]
                 }
-                
         }
         # put results in a data frame and return it
         out = data.frame(WOE = woe, IV = iv)
@@ -67,7 +65,7 @@ A>
         names(out)[1] = xvar
         rownames(out) = NULL
         out
-	}
+}
 ```
 
 Now, armed with this function, we can go ahead calculating the Weight of Evidence and Information Value for each predictor.
@@ -87,7 +85,7 @@ for (i in 1:length(predictors)) {
 }
 ```
 
-
+A>{linenos=off}
 ```
 Table: bankruptcy
 
@@ -318,6 +316,8 @@ IV$predictive_power[0.5 <= IV$IV] = "Too good to be true"
 kable(IV, row.names = FALSE, format = "pandoc", caption="Information Value")
 ```
 
+
+A>{linenos=off}
 ```
 Table: Information Value
 
