@@ -85,86 +85,70 @@ for (i in 1:length(predictors)) {
 }
 ```
 
-A>{linenos=off}
-```
-Table: bankruptcy
-
-bankruptcy         WOE        IV
------------  ---------  --------
-0              0.04255   0.00171
-1              0.16323   0.00013
-unknown       -0.81760   0.03344
+{title = "bankruptcy", width = "narrow"}
+|bankruptcy    |WOE     |IV      |
+|--------------|--------|--------|
+|0             | 0.04255| 0.00171|
+|1             | 0.16323| 0.00013|
+|unknown       |-0.81760| 0.03344|
+|--------------|--------|--------|
 
 
-
-Table: conviction
-
-conviction         WOE        IV
------------  ---------  --------
-0              0.01313   0.00017
-1             -0.71680   0.00923
-
+{title = "conviction", width = "narrow"}
+|conviction    |WOE     |IV      |
+|--------------|--------|--------|
+|0             | 0.01313| 0.00017|
+|1             |-0.71680| 0.00923|
+|--------------|--------|--------|
 
 
-Table: repossess
-
-repossess         WOE        IV
-----------  ---------  --------
-0            -0.02053   0.00041
-1             0.86782   0.01738
-
-
-
-Table: own_property
-
-own_property         WOE        IV
--------------  ---------  --------
-0                1.49076   0.53989
-1               -0.51879   0.18788
+{title = "repossess", width = "narrow"}
+|repossess     |WOE     |IV      |
+|--------------|--------|--------|
+|0             |-0.02053| 0.00041|
+|1             | 0.86782| 0.01738|
+|--------------|--------|--------|
 
 
-
-Table: late_repayments
-
-late_repayments         WOE        IV
-----------------  ---------  --------
-0                   0.24901   0.04662
-1                  -0.80750   0.15117
-
+{title = "own_property", width = "narrow"}
+|own_property  |WOE     |IV      |
+|--------------|--------|--------|
+|0             | 1.49076| 0.53989|
+|1             |-0.51879| 0.18788|
+|--------------|--------|--------|
 
 
-Table: market_value_cat
-
-market_value_cat                WOE        IV
-------------------------  ---------  --------
-$0                          1.49076   0.53989
-$1 - $910,600              -1.08447   0.22559
-$910,601 - $1,290,000      -0.69860   0.12189
-$1,290,001 - $2,680,000     0.08354   0.00170
+{title = "late_repayments", width = "narrow"}
+|late_repayments|WOE     |IV      |
+|---------------|--------|--------|
+|0              | 0.24901| 0.04662|
+|1              |-0.80750| 0.15117|
+|---------------|--------|--------|
 
 
+{title = "market_value_cat", width = "narrow"}
+|market_value_cat        |WOE     |IV      |
+|------------------------|--------|--------|
+|$0                      | 1.49076| 0.53989|
+|$1 - $910,600           |-1.08447| 0.22559|
+|$910,601 - $1,290,000   |-0.69860| 0.12189|
+|$1,290,001 - $2,680,000 | 0.08354| 0.00170|
+|------------------------|--------|--------|
 
-Table: purpose
-
+{title = "purpose", width = "narrow"}
 purpose         WOE        IV
 --------  ---------  --------
 0           0.03300   0.00064
 1          -0.09876   0.00259
 unknown     0.04602   0.00032
 
-
-
-Table: marital
-
+{title = "marital", width = "narrow"}
 marital         WOE        IV
 --------  ---------  --------
 0          -0.09395   0.00368
 1           0.06731   0.00264
 
-
-
-Table: employment
-
+{title = "employment", width = "narrow"}
 employment         WOE        IV
 -----------  ---------  --------
 1             -0.01754   0.00013
@@ -174,28 +158,20 @@ employment         WOE        IV
 5              0.18044   0.00147
 6             -0.12792   0.00254
 
-
-
-Table: exist_customer
-
+{title = "exist_customer", width = "narrow"}
 exist_customer         WOE        IV
 ---------------  ---------  --------
 0                  0.02295   0.00035
 1                 -0.04375   0.00066
 
-
-
-Table: unspent_convictions
-
+{title = "unspent_convictions", width = "narrow"}
 unspent_convictions         WOE        IV
 --------------------  ---------  --------
 0                       0.00194   0.00000
 1                      -0.02299   0.00004
 
 
-
-Table: log_debt_to_income
-
+{title = "log_debt_to_income", width = "narrow"}
 log_debt_to_income         WOE        IV
 -------------------  ---------  --------
 1                      1.34909   0.08811
@@ -209,10 +185,7 @@ log_debt_to_income         WOE        IV
 9                     -0.32505   0.01342
 10                    -0.66630   0.07614
 
-
-
-Table: log_annual_income
-
+{title = "log_annual_income", width = "narrow"}
 log_annual_income         WOE        IV
 ------------------  ---------  --------
 1                    -0.72043   0.09396
@@ -226,10 +199,7 @@ log_annual_income         WOE        IV
 9                     1.25775   0.07970
 10                    2.77344   0.22233
 
-
-
-Table: credit_line_age
-
+{title = "credit_line_age", width = "narrow"}
 credit_line_age         WOE        IV
 ----------------  ---------  --------
 1                  -0.71004   0.09031
@@ -243,10 +213,7 @@ credit_line_age         WOE        IV
 9                   0.45522   0.01561
 10                  0.66467   0.02967
 
-
-
-Table: market_value
-
+{title = "market_value", width = "narrow"}
 market_value         WOE        IV
 -------------  ---------  --------
 1                1.12325   0.06755
@@ -260,10 +227,7 @@ market_value         WOE        IV
 9               -0.09039   0.00087
 10               0.51522   0.01934
 
-
-
-Table: credit_applications
-
+{title = "credit_applications", width = "narrow"}
 credit_applications         WOE        IV
 --------------------  ---------  --------
 1                       0.25156   0.00538
@@ -277,10 +241,7 @@ credit_applications         WOE        IV
 9                      -0.34102   0.01496
 10                     -0.63100   0.06599
 
-
-
-Table: age
-
+{title = "age", width = "narrow"}
 age         WOE        IV
 ----  ---------  --------
 1       0.03370   0.00011
