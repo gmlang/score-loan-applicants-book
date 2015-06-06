@@ -3,7 +3,6 @@
 
 A bank has provided you with a dataset of Unsecured Personal Loans (UPLs) collected over the past two years. A description of all the variables is given in the following table. A bad customer is someone who has missed three or more payments during the first year of the loan. Identifying bad customers is very important for the bank because the loss from each bad customer is on average five times larger than the profit from a good customer. So even if the number of bad customers in the dataset is relatively small they have a large impact on profits. 
 
-
 {title = "", width = "wide"}
 |Variable Name       |Definition                                                                   |
 |--------------------|-----------------------------------------------------------------------------|
