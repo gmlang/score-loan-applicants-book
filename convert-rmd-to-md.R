@@ -22,3 +22,6 @@ knitr::knit(file_in)
 
 file_in = file.path(rmd_path, "02-04-simple-logit.Rmd")
 knitr::knit(file_in)
+
+file_in = file.path(rmd_path, "02-05-preselect-predictors.Rmd")
+knitr::knit(file_in)
