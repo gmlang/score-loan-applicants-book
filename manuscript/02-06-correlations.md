@@ -17,7 +17,7 @@ cor(upl[, iv_con])
 ```
 
 {title = "Table 3: Correlations amongst Continuous Predictors", width = "wide"}
-                     |market_value|credit_applications|log_debt_to_income|log_annual_income|credit_line_age|
+|                    |market_value|credit_applications|log_debt_to_income|log_annual_income|credit_line_age|
 |--------------------|------------|-------------------|------------------|-----------------|---------------|
 |market_value        |     1.00000|    -0.18971       |    -0.30818      |     0.37805     |    0.24162    |
 |credit_applications |    -0.18971|     1.00000       |     0.62245      |    -0.58064     |   -0.65875    |
