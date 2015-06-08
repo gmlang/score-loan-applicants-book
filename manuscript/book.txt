@@ -5,3 +5,4 @@
 02-02-descriptive-analysis.md
 02-03-WoE-n-IV.md
 02-04-simple-logit.md
+02-05-preselect-predictors.md
