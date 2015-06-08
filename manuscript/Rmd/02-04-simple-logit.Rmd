@@ -25,7 +25,7 @@ load(file_path)
 
 Next, we fit a simple logit model regressing the target against each predictor separately and extract the parameter estimates and their p-values. We do that using a for loop.
 
-```{r, cache=TRUE}
+```{r}
 predictors = c(iv_cat_strong, iv_cat_weak, iv_cat_none, 
                iv_con_strong, iv_con_weak, iv_con_none)
 simple_est = data.frame()
