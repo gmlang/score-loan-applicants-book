@@ -121,6 +121,7 @@ We see that the following pairs are possibly correlated:
 * log_annual_income, market_value_cat 
 
 We'll refer back to these correlation observations when we make variable selection decisions and build the final model in the next chapter. Let's close this section by saving the data.
+
 ```{r}
 predictors = c(iv_con, iv_cat)
 save(upl, predictors, file=file.path(data_path, "cleaned-06.rda"))

@@ -1,23 +1,8 @@
----
-title: "02-06-correlations-amongst-predictors"
-author: "gmlang"
-date: "April 3, 2015"
-output: pdf_document
----
-
-
-```r
-library(knitr)
-opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
-               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'png')
-options(width = 100, scipen = 5, digits = 5)
-```
-
 ## Correlations Amongst Predictors
 
 In the last section, we pre-selected predictors that will go into the final modeling building process. In this section, we want to look at their correlations. The purpose is to keep one of the highly correlated predictors while dropping the others. This will reduce or prevent [multicollinearity](http://en.wikipedia.org/wiki/Multicollinearity) in the final model. Let's get started. First, we load data saved from the last section.
         
-
+A>
 ```r
 proj_path = "~/score-loan-applicants"
 data_path = file.path(proj_path, 'data')
@@ -26,10 +11,12 @@ load(file.path(data_path, 'cleaned-05.rda'))
 
 It's easy to obtain the correlations amongst the continuous variables.
 
+A>
 ```r
 cor(upl[, iv_con])
 ```
 
+A>{linenos=off}
 ```
                     market_value credit_applications log_debt_to_income log_annual_income
 market_value             1.00000            -0.18971           -0.30818           0.37805
@@ -52,21 +39,21 @@ The correlation matrix shows the following pairs of predictors are highly correl
 
 We'll keep log_annual_income and drop log_debt_to_income because the latter has a lower Information Value (0.232 vs. 0.467 for log_annual_income).
 
-
+A>
 ```r
 iv_con = iv_con[iv_con != "log_debt_to_income"]
 ```
 
 For the categorical predictors, first of all, we know market_value_cat and own_property are related by definition. Specifically, If market_value_cat is > zero, own_property must be 1 and if own_property = 0, market_value_cat must be zero. We'll keep market_value_cat and drop own_property because market_value_cat contains richer information than own_property. 
 
-
+A>
 ```r
 iv_cat = iv_cat[iv_cat != "own_property"]
 ```
 
 For the other categorical predictors, we use bar charts to check if any pair is correlated.
 
-
+A>
 ```r
 iv_cat_reorder = c(iv_cat[2:5], iv_cat[c(1,6)])
 mat = combn(iv_cat_reorder, 2)
@@ -115,7 +102,7 @@ For non-correlated pairs, the bars should have about the same height. We see tha
 
 Finally, we use boxplots to examine the correlations amongst categorical and continuous variables.
 
-
+A>
 ```r
 plt = mk_boxplot(upl)
 for (con_var in iv_con) {
@@ -148,6 +135,7 @@ We see that the following pairs are possibly correlated:
 
 We'll refer back to these correlation observations when we make variable selection decisions and build the final model in the next chapter. Let's close this section by saving the data.
 
+A>
 ```r
 predictors = c(iv_con, iv_cat)
 save(upl, predictors, file=file.path(data_path, "cleaned-06.rda"))
