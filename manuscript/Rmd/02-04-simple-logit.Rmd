@@ -1,33 +1,35 @@
 ---
-title: "04-Fit Simple Logistic Regression Models for each Predictor"
+title: "02-04-Simple-Logit-Models"
 author: "gmlang"
 date: "April 3, 2015"
 output: pdf_document
 ---
 
-```{r}
-# settings for RMarkdown 
+```{r setup}
 library(knitr)
 opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
-               echo = TRUE, fig.width = 4, fig.height = 4, dev = 'pdf')
+               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'png')
 options(width = 100, scipen = 5, digits = 5)
 ```
 
-### Load data
+## Simple Logit Models
+
+First, let's load the data we saved from section 2.2.
+
 ```{r}
-# set path and load data
-proj_path = '~/Movies/masterr-vids/predict-bad-customers'
+proj_path = "~/score-loan-applicants"
 data_path = file.path(proj_path, 'data')
 file_path = file.path(data_path, 'cleaned-02.rda')
 load(file_path)
-
-# collect predictors
-predictors = c(iv_cat_strong, iv_cat_weak, iv_cat_none, 
-               iv_con_strong, iv_con_weak, iv_con_none)
 ```
+
 
 ### Fit simple logistic regression on each predictor
 ```{r, cache=TRUE}
+# collect predictors
+predictors = c(iv_cat_strong, iv_cat_weak, iv_cat_none, 
+               iv_con_strong, iv_con_weak, iv_con_none)
+# fit simple logit model regressing the target against each predictor separately
 simple_est = data.frame()
 for (var in predictors) {
         f = formula(paste0("bad ~ ", var))

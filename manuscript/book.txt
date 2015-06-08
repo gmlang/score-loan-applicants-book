@@ -4,3 +4,4 @@
 02-01-clean-data.md
 02-02-descriptive-analysis.md
 02-03-WoE-n-IV.md
+02-04-simple-logit.md
