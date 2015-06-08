@@ -19,3 +19,6 @@ knitr::knit(file_in)
 
 file_in = file.path(rmd_path, "02-03-WoE-n-IV.Rmd")
 knitr::knit(file_in)
+
+file_in = file.path(rmd_path, "02-04-simple-logit.Rmd")
+knitr::knit(file_in)

@@ -14,7 +14,7 @@ options(width = 100, scipen = 5, digits = 5)
 
 ## Simple Logit Models
 
-First, let's load the data we saved from section 2.2.
+First, let's load the data we saved from section 3.2.
 
 ```{r}
 proj_path = "~/score-loan-applicants"
@@ -23,17 +23,15 @@ file_path = file.path(data_path, 'cleaned-02.rda')
 load(file_path)
 ```
 
+Next, we fit a simple logit model regressing the target against each predictor separately and extract the parameter estimates and their p-values. We do that using a for loop.
 
-### Fit simple logistic regression on each predictor
 ```{r, cache=TRUE}
-# collect predictors
 predictors = c(iv_cat_strong, iv_cat_weak, iv_cat_none, 
                iv_con_strong, iv_con_weak, iv_con_none)
-# fit simple logit model regressing the target against each predictor separately
 simple_est = data.frame()
 for (var in predictors) {
         f = formula(paste0("bad ~ ", var))
-        fit = glm(f, data=dat, family=binomial)
+        fit = glm(f, data=upl, family=binomial)
         simple_est = rbind(simple_est, rbind(summary(fit)$coef[2, c("Estimate", "Pr(>|z|)")]))
 } 
 simple_est = cbind(var=predictors, simple_est)
@@ -41,16 +39,12 @@ simple_est$Significant = ifelse(simple_est[["Pr(>|z|)"]] < 0.05, "*", " ")
 print(simple_est)
 ```
 
-### Collect predictors into different groups based on significance
-```{r}
-iv_sig = as.character(simple_est$var[simple_est[["Pr(>|z|)"]] < 0.05])
-print(iv_sig)
+We then separate the predictors into two groups based on if their p-values are greater than 0.05 or not. And we save them for ensuing analysis.
 
+```{r}
+iv_sig = as.character(simple_est$var[simple_est[["Pr(>|z|)"]] <= 0.05])
+print(iv_sig)
 iv_non_sig = as.character(simple_est$var[simple_est[["Pr(>|z|)"]] > 0.05])
 print(iv_non_sig)
-```
-
-### Save
-```{r}
 save(iv_sig, iv_non_sig, file=file.path(data_path, 'cleaned-04.rda'))
 ```
