@@ -9,28 +9,23 @@ data_path = file.path(proj_path, 'data')
 load(file.path(data_path, 'cleaned-05.rda'))
 ```
 
-It's easy to obtain the correlations amongst the continuous variables.
+It's easy to obtain the correlations amongst the continuous predictors.
 
 A>
 ```r
 cor(upl[, iv_con])
 ```
 
-A>{linenos=off}
-```
-                    market_value credit_applications log_debt_to_income log_annual_income
-market_value             1.00000            -0.18971           -0.30818           0.37805
-credit_applications     -0.18971             1.00000            0.62245          -0.58064
-log_debt_to_income      -0.30818             0.62245            1.00000          -0.80058
-log_annual_income        0.37805            -0.58064           -0.80058           1.00000
-credit_line_age          0.24162            -0.65875           -0.73884           0.66661
-                    credit_line_age
-market_value                0.24162
-credit_applications        -0.65875
-log_debt_to_income         -0.73884
-log_annual_income           0.66661
-credit_line_age             1.00000
-```
+{title = "Table 3: Correlations amongst Continuous Predictors", width = "wide"}
+                     |market_value|credit_applications|log_debt_to_income|log_annual_income|credit_line_age|
+|--------------------|------------|-------------------|------------------|-----------------|---------------|
+|market_value        |     1.00000|    -0.18971       |    -0.30818      |     0.37805     |    0.24162    |
+|credit_applications |    -0.18971|     1.00000       |     0.62245      |    -0.58064     |   -0.65875    |
+|log_debt_to_income  |    -0.30818|     0.62245       |     1.00000      |    -0.80058     |   -0.73884    |
+|log_annual_income   |     0.37805|    -0.58064       |    -0.80058      |     1.00000     |    0.66661    |
+|credit_line_age     |     0.24162|    -0.65875       |    -0.73884      |     0.66661     |    1.00000    |
+|--------------------|------------|-------------------|------------------|-----------------|---------------|                    
+
 
 The correlation matrix shows the following pairs of predictors are highly correlated:
 
