@@ -25,6 +25,7 @@ load(file.path(data_path, 'cleaned-04.rda'))
 ```
 
 We want to drop predictors that meet all of the following criteria:
+
 * potentially none or weakly predictive predictors found using distribution plots in the descriptive analysis section
 * potentially none-predictive predictors based on information value.
 * potentially none-significant predictors identified by the simple logit models.
