@@ -228,6 +228,23 @@ for (i in 1:length(predictors)) {
 |10                |  0.66467|   0.02967|
 |------------------|---------|----------|
 
+
+{title = "market_value", width = "narrow"}
+|market_value    |   WOE   |    IV   |
+|----------------|---------|---------|
+|1               | 1.12325 |  0.06755|
+|2               | 1.38167 |  0.09113|
+|3               | 1.41543 |  0.09427|
+|4               | 1.05118 |  0.06118|
+|5               |-0.63825 |  0.06799|
+|6               |-0.51247 |  0.03903|
+|7               |-0.42235 |  0.02453|
+|8               |-0.30453 |  0.01159|
+|9               |-0.09039 |  0.00087|
+|10              | 0.51522 |  0.01934|
+|----------------|---------|---------|
+
+
 {title = "credit_applications", width = "narrow"}
 |credit_applications   |     WOE  |     IV  |
 |----------------------|----------|---------|
@@ -298,6 +315,7 @@ kable(IV, row.names = FALSE, format = "pandoc", caption="Information Value")
 |log_debt_to_income  |   0.23204|  Medium             | 
 |log_annual_income   |   0.46695|  Strong             | 
 |credit_line_age     |   0.20600|  Medium             | 
+|market_value        |   0.47746|  Strong             | 
 |credit_applications |   0.13396|  Medium             | 
 |age                 |   0.00268|  Useless            | 
 |--------------------|----------|---------------------|
