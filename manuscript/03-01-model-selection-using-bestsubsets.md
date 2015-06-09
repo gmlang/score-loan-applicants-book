@@ -187,39 +187,40 @@ Using this formula, we refit the final best model on the training set.
 A>
 ```r
 bestfit = glm(fbest, data=dat_train, family=binomial)
-summary(bestfit)
+coef(bestfit)
 ```
 
 A>{linenos=off}
 ```
-Call:
-glm(formula = fbest, family = binomial, data = dat_train)
-Deviance Residuals: 
-   Min      1Q  Median      3Q     Max  
--2.638  -0.548  -0.282  -0.127   3.018  
-Coefficients:
-                                                          Estimate Std. Error z value     Pr(>|z|)
-(Intercept)                                               20.78067    2.41118    8.62      < 2e-16 ***
-marital1                                                  -0.16943    0.09467   -1.79       0.0735 .
-bankruptcy1                                               -2.14020   15.20665   -0.14       0.8881 
-bankruptcyunknown                                         11.45846    5.36242    2.14       0.0326 *
-market_value_cat$1 - $910,600                             -0.50098    3.16399   -0.16       0.8742
-market_value_cat$910,601 - $1,290,000                     10.78748    3.87235    2.79       0.0053 **
-market_value_cat$1,290,001 - $2,680,000                   30.31471    5.07230    5.98 0.0000000023 ***
-log_annual_income                                         -2.05746    0.21826   -9.43      < 2e-16 ***
-credit_line_age                                           -0.00500    0.00216   -2.31       0.0208 *
-bankruptcy1:log_annual_income                              0.13268    1.32487    0.10       0.9202
-bankruptcyunknown:log_annual_income                       -0.91538    0.46082   -1.99       0.0470 *
-market_value_cat$1 - $910,600:log_annual_income            0.25348    0.28187    0.90       0.3685
-market_value_cat$910,601 - $1,290,000:log_annual_income   -0.68241    0.33759   -2.02       0.0432 *
-market_value_cat$1,290,001 - $2,680,000:log_annual_income -2.24848    0.42794   -5.25 0.0000001487 ***                                                                                                           
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-(Dispersion parameter for binomial family taken to be 1)
-    Null deviance: 4140.3  on 4349  degrees of freedom
-Residual deviance: 2943.2  on 4336  degrees of freedom
-AIC: 2971
-Number of Fisher Scoring iterations: 6
+                                              (Intercept) 
+                                               20.7806749 
+                                                 marital1 
+                                               -0.1694319 
+                                              bankruptcy1 
+                                               -2.1402012 
+                                        bankruptcyunknown 
+                                               11.4584570 
+                            market_value_cat$1 - $910,600 
+                                               -0.5009762 
+                    market_value_cat$910,601 - $1,290,000 
+                                               10.7874772 
+                  market_value_cat$1,290,001 - $2,680,000 
+                                               30.3147072 
+                                        log_annual_income 
+                                               -2.0574576 
+                                          credit_line_age 
+                                               -0.0050016 
+                            bankruptcy1:log_annual_income 
+                                                0.1326843 
+                      bankruptcyunknown:log_annual_income 
+                                               -0.9153788 
+          market_value_cat$1 - $910,600:log_annual_income 
+                                                0.2534780 
+  market_value_cat$910,601 - $1,290,000:log_annual_income 
+                                               -0.6824139 
+market_value_cat$1,290,001 - $2,680,000:log_annual_income 
+                                               -2.2484841 
 ```
 
+You can run `summary(bestfit)` to find out the standard errors and p-values associated with these parameter coefficients.
 
