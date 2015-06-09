@@ -80,7 +80,7 @@ WoE_n_IV = function(dat, yvar, xvar) {
 }
 ```
 
-Now, armed with this function, we can go ahead calculating the Weight of Evidence and Information Value for each predictor.
+Armed with this function, we can go ahead calculating the WoE and IV for each predictor.
 
 ```{r}
 predictors = c(iv_cat_strong, iv_cat_weak, iv_cat_none, iv_con_strong,
