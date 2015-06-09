@@ -37,7 +37,11 @@ calc_pct_bad = function(dat, var) {
         row.names(pct) = NULL
         pct
 }
-# example
+```
+
+Here's an example of how to use it.
+
+```{r}
 calc_pct_bad(upl, iv_cat[1])
 ```
 
@@ -133,7 +137,7 @@ p = rotate_axis_text(p, 15)
 print(p)
 ```
 
-We see that market_value_cat is potentially a strong predictor.
+We see that market_value_cat is potentially a strong predictor. We'll use it instead of market_value.
 
 Finally, we collect the predictors into strong, weak and none groups as above discussed so that we can easily access them for future analysis.
 
@@ -145,7 +149,7 @@ iv_cat_weak = c("purpose", "marital", "employment")
 iv_cat_none = c("exist_customer", "unspent_convictions")
 # continuous vars
 iv_con_strong = c("log_debt_to_income", "log_annual_income", "credit_line_age")
-iv_con_weak = c("market_value", "credit_applications")
+iv_con_weak = c("credit_applications") # exclude market_value
 iv_con_none = c("age")
 # save
 save(upl, iv_cat_strong, iv_cat_weak, iv_cat_none, iv_con_strong,

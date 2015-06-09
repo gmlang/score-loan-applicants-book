@@ -25,11 +25,16 @@ calc_pct_bad = function(dat, var) {
         row.names(pct) = NULL
         pct
 }
-# example
+```
+
+Here's an example of how to use it.
+
+A>
+```r
 calc_pct_bad(upl, iv_cat[1])
 ```
 
-A> {linenos=off}
+A>{linenos=off}
 ```
   bankruptcy pct_bad
 1          0 0.17461
@@ -78,7 +83,6 @@ for (var in iv_con) {
                 main = paste("Distribution of", var), legend=F)
         p = scale_axis(p, "y", use_comma=T)
         print(p)
-#         cat('\r\n\r\n')
 }
 ```
 
@@ -115,7 +119,7 @@ A>
 summary(upl$market_value)
 ```
 
-A> {linenos=off}
+A>{linenos=off}
 ```
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
       0       0  856000  730000 1290000 2680000 
@@ -153,7 +157,7 @@ print(p)
 
 ![](images/target_vs_market_value_cat-1.png) 
 
-We see that market_value_cat is potentially a strong predictor.
+We see that market_value_cat is potentially a strong predictor. We'll use it instead of market_value.
 
 Finally, we collect the predictors into strong, weak and none groups as above discussed so that we can easily access them for future analysis.
 
@@ -166,7 +170,7 @@ iv_cat_weak = c("purpose", "marital", "employment")
 iv_cat_none = c("exist_customer", "unspent_convictions")
 # continuous vars
 iv_con_strong = c("log_debt_to_income", "log_annual_income", "credit_line_age")
-iv_con_weak = c("market_value", "credit_applications")
+iv_con_weak = c("credit_applications") # exclude market_value
 iv_con_none = c("age")
 # save
 save(upl, iv_cat_strong, iv_cat_weak, iv_cat_none, iv_con_strong,

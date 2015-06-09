@@ -1,0 +1,419 @@
+---
+title: "03-Run Best Subsets algorithm to select the best logistic regression model"
+author: "gmlang"
+date: "April 3, 2015"
+output: pdf_document
+---
+
+```{r}
+# settings for RMarkdown 
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 4, fig.height = 4, dev = 'pdf')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+### Load data and Split data into training and testing sets
+```{r}
+library(ezplot)
+
+# set path and load data
+proj_path = '~/Movies/masterr-vids/predict-bad-customers'
+data_path = file.path(proj_path, 'data')
+file_path = file.path(data_path, 'cleaned-06.rda')
+load(file_path)
+
+# split dat into training (60%) and testing (40%) sets
+set.seed(123294)
+train = sample(1:nrow(dat), round(nrow(dat)*0.6))
+dat_train = dat[train, ]
+dat_test = dat[-train, ]
+
+# show predictors
+print(predictors)
+```
+
+### Model selection using Best Subsets (consider all subsets of predictors) logistic regression based on AIC - main effect only.
+```{r, cache=TRUE}
+library(glmulti)
+
+t0 = proc.time()
+f = as.formula(paste0("bad ~ ", paste(predictors, collapse=" + ")))
+bestsub_logit = glmulti(f, data = dat_train, 
+                        level = 1, # no interaction considered
+                        method = "h", # exhaustive approach
+                        crit = "aic", # AIC as criteria
+                        confsetsize = 5, # keep 5 best models
+                        plotty = F, report = F, # no plot or interim reports
+                        fitfunction = "glm", # glm function
+                        family = binomial) # binomial family for logit model
+cat("Run time: ")
+print(proc.time() - t0)
+
+# show 5 best models (use @ instead of $ for an s4 object)
+bestsub_logit@formulas
+# show results for the best model
+summary(bestsub_logit@objects[[1]])
+
+# extract the main effects of the best model
+temp = as.character(bestsub_logit@formulas[[1]])[3]
+main_effects = strsplit(temp, " \\+ ")[[1]][-1]
+main_effects
+```
+
+### Get related interaction terms found by the 06-correlation step.
+```{r}
+interact_terms1 = c("marital:bankruptcy", 
+                    "bankruptcy:market_value_cat")
+interact_terms2 = c("credit_line_age:bankruptcy",
+                    "credit_line_age:market_value_cat",
+                    "log_annual_income:bankruptcy",
+                    "log_annual_income:market_value_cat")
+interactions = c(interact_terms1, interact_terms2)
+```
+
+### Make model formulas for all combinations of main effects and interactions.
+```{r}
+base_model = paste0("bad ~ ", paste(main_effects, collapse=" + "))
+
+# create list of models
+list_of_models = lapply(seq_along(interactions), function(n) {
+        left = base_model
+        right = apply(combn(interactions, n), 2, paste, collapse = " + ")
+        paste(left, right, sep = " + ")
+})
+
+# convert to a vector
+vec_of_models = unlist(list_of_models)
+vec_of_models = c(base_model, vec_of_models)
+```
+
+### Select final best model using AIC (the smaller the better)
+```{r}
+list_of_fits = lapply(vec_of_models, function(x) {
+        formula = as.formula(x)
+        fit = glm(formula, data=dat_train, family=binomial)
+        result_AIC = extractAIC(fit)
+        data.frame(predictor_cnt = result_AIC[1],
+                   AIC = result_AIC[2], model = x, stringsAsFactors=F)
+})
+
+# collapse to a data frame
+result = do.call(rbind, list_of_fits)
+
+# sort and print
+result = result[order(result$AIC),]
+head(result)
+
+# final model formula 
+fbest = as.formula(result$model[1])
+fbest
+
+# refit final model
+bestfit = glm(fbest, data=dat_train, family=binomial)
+summary(bestfit)
+```
+
+### Use 0.5 as threshold. If predicted probability > 0.5, label it "1"; otherwise, label it "0".
+```{r}
+threshold = 0.5
+```
+
+### Calculate test Accuracy under the final best model, where Accuracy = (TP + TN) / (P + N). It measures the overall percent of correct classifications. 
+```{r}
+prob = predict(bestfit, dat_test, type="response")
+range(prob)
+pred = ifelse(prob > threshold, 1, 0)
+tbl_logit = table(pred, truth = dat_test$bad)
+print(tbl_logit)
+test_accuracy = sum(pred == dat_test$bad) / length(pred)
+paste0(round(test_accuracy*100, 2), "%")
+```
+
+### Calculate test Accuracy under the benchmark model, which is obtained by predicting every customer as good (or 0).
+```{r}
+pred = rep(0, length(dat_test$bad))
+tbl_bench = table(pred, truth = dat_test$bad)
+tbl_bench = rbind(tbl_bench, c(0, 0))
+row.names(tbl_bench) = c("0", "1")
+print(tbl_bench)
+test_accuracy = sum(pred == dat_test$bad) / length(pred)
+paste0(round(test_accuracy*100, 2), "%")
+```
+We see our logit model chosen by the best subsets method beats the benchmark by about 3% in test Accuracy using 0.5 as the threshold for determining the class labels.
+
+### Calculate test True Positive Rate (TPR, the bigger the better). Note TPR is also called sensitivity or recall. It is defined as TPR = TP / P = TP / (TP + FN), so it is the probability of a positive test, given that the truth is positive. In our case, "positive" means "bad customer", and the TPR measures the probability of detecting the customer as bad, given that the customer is bad.
+```{r}
+# calculate test TPR under the logit model
+TP = tbl_logit["1", "1"]
+FN = tbl_logit["0", "1"]
+TPR = TP / (TP + FN)
+paste0(round(TPR*100, 2), "%")
+
+# calculate test TPR under the benchmark
+TP = tbl_bench[2,2]
+FN = tbl_bench[1,2]
+TPR = TP / (TP + FN)
+paste0(round(TPR*100, 2), "%")
+```
+We see our logit model is much better at detecting the truely bad customers than our benchmark, although in absolute terms, 36% of TPR is still too low for our application since a bad customer is really costly and we want to increase the TPR. We'll see how to do that in the next section by changing the threshold and creating something called ROC curve. But first of all, let's be more efficient with our code. If you pay attention, you'll see that we've been repeating ourselves when calculating each test measure under the logit model and benchmark. We can write a function to avoid repeating ourselves.
+
+```{r}
+# make confusion table (also called contingency table or error matrix)
+mk_tbl = function(pred, truth) {
+        # pred: a vector of the predicted class labels
+        # truth: a vector of the true labels
+        tbl = table(prediction = pred, truth = truth)
+        rownames = row.names(tbl)
+        if (length(rownames) == 1) {
+                if (rownames == "0")
+                        tbl = rbind(tbl, c(0, 0))                
+                if (rownames == "1")
+                        tbl = rbind(c(0, 0), tbl)
+                row.names(tbl) = c("0", "1")
+        }
+        tbl
+}
+
+calc_accuracy = function(tbl) {
+        # tbl: a confusion table with predictions along the rows and 
+        #      truth along the columns
+        sum(diag(tbl)) / sum(tbl)
+}
+        
+calc_tpr = function(tbl) {
+        # tbl: a confusion table with predictions along the rows and 
+        #      truth along the columns
+        TP = tbl["1", "1"]
+        FN = tbl["0", "1"]
+        TP / (TP + FN)
+}
+
+print_format = function(num) paste0(round(num*100, 2), "%")
+```
+
+### redo above calculations using the functions
+```{r}
+# get confusion table for benchmark
+pred = rep(0, length(dat_test$bad))
+tbl_bench = mk_tbl(pred, dat_test$bad)
+tbl_bench
+
+# get confusion table for logit model
+prob = predict(bestfit, dat_test, type="response")
+pred = ifelse(prob > threshold, 1, 0)
+tbl_logit = mk_tbl(pred, dat_test$bad)
+tbl_logit
+
+# calculate test accuracy for benchmark and logit model respectively
+print_format(calc_accuracy(tbl_bench))
+print_format(calc_accuracy(tbl_logit))
+
+# calculate TPR for benchmark and logit model respectively
+print_format(calc_tpr(tbl_bench))
+print_format(calc_tpr(tbl_logit))
+```
+
+### Calculate test False Positive Rate (FPR, the smaller the better). FPR is defined as FPR = FP / N = FP / (FP + TN), so it's the probability of a positive test, given that the truth is negative. In our case, the FPR measures the probability of detecting the customer as bad, given that the customer is good. Note 1-FPR is called specificity. Mathematically, 1 - FPR = TN / N, so it is the True Negative Rate (TNR). TNR (or specificity) measures the probability of a negative test, given that the truth is negative. In our case, "negative" means "good customer", and the TNR measures the probability of detecting the customer as good, given that the customer is good.
+```{r}
+calc_fpr = function(tbl) {
+        # tbl: a confusion table with predictions along the rows and 
+        #      truth along the columns
+        FP = tbl["1", "0"]
+        TN = tbl["0", "0"]
+        FP / (FP + TN)
+}
+
+# calculate FPR for benchmark and logit model respectively
+print_format(calc_fpr(tbl_bench))
+print_format(calc_fpr(tbl_logit))
+```
+
+### Calculate test Precision (the bigger the better). Precision is defined as Precision = TP / (TP + FP), so it's the probability of the test being correct given a positive test. In other words, it measures how good the test is for detecting positives, and it is also called "positive predictive value."
+```{r}
+calc_precision = function(tbl) {
+        # tbl: a confusion table with predictions along the rows and 
+        #      truth along the columns
+        TP = tbl["1", "1"]
+        FP = tbl["1", "0"]
+        TP / (TP + FP)
+}
+
+# calculate Precision for benchmark and logit model respectively
+print_format(calc_precision(tbl_bench))
+print_format(calc_precision(tbl_logit))
+```
+
+### Calculate test F-measure, which is defined as F = 2 / (1/precision + 1/recall)
+```{r}
+calc_F = function(tbl) {
+        # tbl: a confusion table with predictions along the rows and 
+        #      truth along the columns
+        precision = calc_precision(tbl)
+        recall = calc_tpr(tbl)
+        2 / (1/precision + 1/recall)
+}
+
+# calculate Precision for benchmark and logit model respectively
+print_format(calc_F(tbl_bench))
+print_format(calc_F(tbl_logit))
+```
+
+## Varying threshold from 0 to 1 with increment of 0.01. For each threshold value, calculate the test TPR, FPR, Precision and F-measure.
+```{r}
+prob = predict(bestfit, dat_test, type="response")
+range(prob)
+
+cutoffs = seq(0, 1, 0.01)
+vec_tpr = vec_fpr = vec_precision = vec_F = vec_accuracy =  rep(NA, length(cutoffs))
+names(vec_tpr) = names(vec_fpr) = names(vec_precision) = names(vec_F) = 
+        names(vec_accuracy) = cutoffs
+for (threshold in cutoffs) {
+        pred = ifelse(prob > threshold, 1, 0)
+        tbl = mk_tbl(pred, dat_test$bad)
+        vec_tpr[as.character(threshold)] = calc_tpr(tbl)
+        vec_fpr[as.character(threshold)] = calc_fpr(tbl)
+        vec_precision[as.character(threshold)] = calc_precision(tbl)
+        vec_F[as.character(threshold)] = calc_F(tbl)
+        vec_accuracy[as.character(threshold)] = calc_accuracy(tbl)
+}
+
+head(vec_tpr)
+tail(vec_tpr)
+range(vec_tpr)
+
+head(vec_fpr)
+tail(vec_fpr)
+range(vec_fpr)
+
+head(vec_precision)
+tail(vec_precision)
+range(vec_precision, na.rm=T)
+
+head(vec_F)
+tail(vec_F)
+range(vec_F, na.rm=T)
+
+head(vec_accuracy)
+tail(vec_accuracy)
+range(vec_accuracy, na.rm=T)
+```
+
+### The ROC curve has TPR (sensitivity/recall) on the y-axis and FPR (1-specificity/1-TNR) on the x-axis. The closer the curve is to the uper left corner, the better, and this is because we like to have high TPR and low FPR. We now make a ROC curve and calculate the Area Under the Curve (AUC).
+```{r}
+# plot ROC curve
+dat_roc = data.frame(fpr=vec_fpr, tpr=vec_tpr)
+plt = mk_scatterplot(dat_roc)
+p = plt("fpr", "tpr", xlab="False Positive Rate (1 - Specificity)", 
+        ylab="True Positive Rate (Sensitivity/Recall)",
+        pt_size=1.5, pt_alpha=1)
+p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+print(p)
+
+# calculate AUC
+calc_auc = function(fpr, tpr) {
+        names(fpr) = names(tpr) = NULL
+        auc = 0
+        for (i in 2:length(fpr)) # adds up the areas of the trapezoids 
+            auc = auc + 0.5 * (tpr[i] + tpr[i - 1]) * abs(fpr[i] - fpr[i - 1])
+        auc
+}
+
+calc_auc(vec_fpr, vec_tpr)
+```
+
+### Plot Precision vs. Recall (TPR/Sensitivity)
+```{r}
+# plot Precision vs. Recall
+dat_prec_recall = data.frame(precision=vec_precision, recall=vec_tpr)
+plt = mk_scatterplot(dat_prec_recall)
+p = plt("recall", "precision", xlab="Recall (Sensitivity/TPR)", 
+        ylab="Precision", pt_size=1.5, pt_alpha=1)
+p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+print(p)
+```
+
+### Plot Precision, F-measure, Recall (TPR/Sensitivity) and Accuracy vs. FPR (1-specificity). Note Recall vs. FPR is just the ROC curve.
+```{r}
+library(dplyr)
+library(tidyr)
+
+# gather data into data frame for plotting
+dat_plt = data.frame(fpr=vec_fpr, precision=vec_precision, F_measure=vec_F,
+                     tpr=vec_tpr, accuracy=vec_accuracy)
+dat_plt = dat_plt %>% gather(type, val, -fpr)
+
+# plot Precision, F-measure, TPR and accuracy vs. FPR
+plt = mk_scatterplot(dat_plt)
+p = plt("fpr", "val", fillby="type", pt_size=1.5, pt_alpha=1, ylab="", 
+        xlab="False Positive Rate (1 - Specificity)") 
+p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+print(p)
+```
+Because a bad customer is really costly to us, we want to identify as many bad customers as possible. To do that, we need to increase the TPR. At the threshold of 0.5, we have a TPR of `r print_format(calc_tpr(tbl_logit))` and a FPR of `r print_format(calc_fpr(tbl_logit))`. The above plot shows that we can increase the TPR to ~80% by increasing the FPR to ~20%. At the same time, the accuracy won't decrease much and will be still around 80%. In general, we can make this procedure precise by maximizing the TPR over a grid of threshold values. We now do exactly that.
+
+Apply 10-fold Cross Validation on the training set to choose the optimal threshold that leads to ~80% TPR and ~80% Accuracy.
+```{r}
+# create a function that makes folds id for k-fold Cross-Validation.
+get_folds = function(k, dat) sample(rep(1:k, length=nrow(dat)))
+
+set.seed(292303)
+K = 10
+folds = get_folds(K, dat_train)
+
+cutoffs = seq(0, 1, 0.01)
+cv_opt_cutoff = rep(NA, K)
+cv_tpr = rep(NA, K)
+cv_accuracy = rep(NA, K)
+for (i in 1:K) {
+        # fit model on K-1 folds and predict on ith fold
+        subtrain = dat_train[folds!=i, ]
+        subtest  = dat_test[folds==i, ]
+        fit = glm(fbest, data=subtrain, family=binomial)
+        prob = predict(fit, subtest, type="response")
+        
+        # find optimal threshold for fold i
+        target_tpr = target_accuracy = 0.8
+        epsilon = 0.05
+        opt_threshold = result_tpr = result_accuracy = c()
+        for (threshold in cutoffs) {
+                pred = ifelse(prob > threshold, 1, 0)
+                tbl = mk_tbl(pred, subtest$bad)
+                tpr = calc_tpr(tbl)
+                accuracy = calc_accuracy(tbl)
+                if (abs(tpr - target_tpr) < epsilon && 
+                        abs(accuracy - target_accuracy) < epsilon) { 
+                        result_tpr = c(result_tpr, tpr)
+                        result_accuracy = c(result_accuracy, accuracy)
+                        opt_threshold = c(opt_threshold, threshold)
+                }
+        }
+        cv_opt_cutoff[i] = mean(opt_threshold)
+        cv_tpr[i] = mean(result_tpr)
+        cv_accuracy[i] = mean(result_accuracy)
+}
+
+print(cv_tpr)
+print(cv_accuracy)
+print(cv_opt_cutoff)
+
+# take the average of the optimal cutoffs and use it as the one optimal cv cutoff
+opt_threshold = mean(cv_opt_cutoff)
+print(opt_threshold)
+```
+
+### Using this optimal threshold found by 10-fold CV, re-Calculate the test Accuracy, FPR, TPR, Precision, and F-measure.
+```{r}
+prob = predict(bestfit, dat_test, type="response")
+pred = ifelse(prob > opt_threshold, 1, 0)
+tbl_logit = table(pred, truth = dat_test$bad)
+print_format(calc_fpr(tbl_logit))
+print_format(calc_tpr(tbl_logit))
+print_format(calc_accuracy(tbl_logit))
+print_format(calc_precision(tbl_logit))
+print_format(calc_F(tbl_logit))
+```
+We see that at the threshold value of `r opt_threshold`, we achieve a True Positive Rate of `r print_format(calc_tpr(tbl_logit))` and `r print_format(calc_accuracy(tbl_logit))` at the cost of `r print_format(calc_fpr(tbl_logit))` False Positive Rate.

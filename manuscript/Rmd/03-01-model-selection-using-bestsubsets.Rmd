@@ -1,0 +1,130 @@
+---
+title: "03-01-model-selection-using-bestsubsets"
+author: "gmlang"
+date: "April 3, 2015"
+output: pdf_document
+---
+
+```{r setup}
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'png')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+## Model Selection Using the Best Subsets Algorithm
+
+First, we load the cleaned data and split it into training and testing subsets. We do this because we'll use the training set for model selection, and we'll use the testing set for backtesting the performance of the chosen model.
+
+```{r}
+proj_path = "~/score-loan-applicants"
+data_path = file.path(proj_path, 'data')
+file_path = file.path(data_path, 'cleaned-06.rda')
+load(file_path)
+# split dat into training (60%) and testing (40%) sets
+set.seed(123294)
+train = sample(1:nrow(upl), round(nrow(upl)*0.6))
+dat_train = upl[train, ]
+dat_test = upl[-train, ]
+```
+
+Just a quick recap, these are the predictors we'll be working with.
+
+```{r}
+print(predictors)
+```
+
+Next, we build a logit model regressing the target variable against each subset of the predictors. We do that for all subsets of the predictors, and we only use the training dataset. Each model will have an [AIC](http://en.wikipedia.org/wiki/Akaike_information_criterion) value. The one with the smallest AIC will be the best model. This can be easily done using the `glmulti` package.
+
+```{r, cache=TRUE}
+library(glmulti)
+t0 = proc.time() # record starting time
+f = as.formula(paste0("bad ~ ", paste(predictors, collapse=" + ")))
+bestsub_logit = glmulti(f, data = dat_train, 
+                        level = 1, # no interaction considered
+                        method = "h", # exhaustive approach
+                        crit = "aic", # AIC as criteria
+                        confsetsize = 5, # keep 5 best models
+                        plotty = F, report = F, # no plot or interim reports
+                        fitfunction = "glm", # glm function
+                        family = binomial) # binomial family for logit model
+cat("Run time: ")
+print(proc.time() - t0) # calculating time it took to run the models
+```
+
+The top 5 best models are
+
+```{r}
+bestsub_logit@formulas # use @ instead of $ since bestsub_logit is a s4 object
+```
+
+The best model is
+
+```{r}
+summary(bestsub_logit@objects[[1]])
+```
+
+We can extract the main effects of the best model.
+
+```{r}
+temp = as.character(bestsub_logit@formulas[[1]])[3]
+main_effects = strsplit(temp, " \\+ ")[[1]][-1]
+print(main_effects)
+```
+
+If you recall, in section 3.6, we identified potentially correlated predictors. We also need to consider the effect of their interactions on the target. We create variables in R to hold them.
+
+```{r}
+interact_terms1 = c("marital:bankruptcy", 
+                    "bankruptcy:market_value_cat")
+interact_terms2 = c("credit_line_age:bankruptcy",
+                    "credit_line_age:market_value_cat",
+                    "log_annual_income:bankruptcy",
+                    "log_annual_income:market_value_cat")
+interactions = c(interact_terms1, interact_terms2)
+```
+
+We can then make model formulas for all combinations of the main effects given by the best model we just found and these interaction terms.
+
+```{r}
+base_model = paste0("bad ~ ", paste(main_effects, collapse=" + "))
+# create list of models
+list_of_models = lapply(seq_along(interactions), function(n) {
+        left = base_model
+        right = apply(combn(interactions, n), 2, paste, collapse = " + ")
+        paste(left, right, sep = " + ")
+})
+# convert to vector
+vec_of_models = unlist(list_of_models)
+vec_of_models = c(base_model, vec_of_models)
+```
+
+Finally, we loop through each of the new model fomula, fit a logit model on the training set, and select the final best model using AIC. 
+
+```{r}
+list_of_fits = lapply(vec_of_models, function(x) {
+        formula = as.formula(x)
+        fit = glm(formula, data=dat_train, family=binomial)
+        result_AIC = extractAIC(fit)
+        data.frame(predictor_cnt = result_AIC[1],
+                   AIC = result_AIC[2], model = x, stringsAsFactors=F)
+})
+result = do.call(rbind, list_of_fits) # collapse to a data frame
+result = result[order(result$AIC),] # sort
+head(result)
+```
+
+The final best model is
+
+```{r}
+fbest = as.formula(result$model[1])
+fbest
+```
+
+Using this formula, we refit the final best model on the training set.
+
+```{r}
+bestfit = glm(fbest, data=dat_train, family=binomial)
+summary(bestfit)
+```
+

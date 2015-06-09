@@ -12,4 +12,6 @@ A>
 install.packages("devtools")
 devtools::install_github("gmlang/ezplot")
 devtools::install_github("gmlang/loans")
+install.packages("rJava")
+install.packages("glmulti")
 ```

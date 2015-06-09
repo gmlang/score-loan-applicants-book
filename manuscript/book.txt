@@ -7,3 +7,4 @@
 02-04-simple-logit.md
 02-05-preselect-predictors.md
 02-06-correlations.md
+03-predictive-analysis.md
