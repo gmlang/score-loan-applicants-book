@@ -16,6 +16,7 @@ A>
 cor(upl[, iv_con])
 ```
 
+
 {title = "Table 3: Correlations amongst Continuous Predictors", width = "wide"}
 |                    |credit_applications|log_debt_to_income|log_annual_income|credit_line_age|
 |--------------------|-------------------|------------------|-----------------|---------------|
@@ -68,7 +69,7 @@ for (j in 1:ncol(mat)) {
         plt = mk_barplot(pct)
         p = plt(var2, "pct1", fillby=var2, xlab=var2, legend=F,
                 main = paste0("Percent of ", var1, " = 1"),
-                ylab=paste(var1, "= 1"), barlab="pct1", barlab_at_top=T,
+                ylab="", barlab="pct1", barlab_at_top=T,
                 barlab_use_pct=T, barlab_size=4)
         p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
         print(p)
