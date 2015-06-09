@@ -25,12 +25,17 @@ drop_cat2 = intersect(intersect(iv_cat_weak, IV_none), iv_non_sig)
 drop_con2 = intersect(intersect(iv_con_weak, IV_none), iv_non_sig)
 drop_cat = c(drop_cat1, drop_cat2)
 drop_con = c(drop_con1, drop_con2)
+```
+
+A>
+```r
 print(drop_cat)
 ```
 
 A>{linenos=off}
 ```
-[1] "exist_customer"      "unspent_convictions" "purpose"             "employment"         
+[1] "exist_customer"      "unspent_convictions" 
+[3] "purpose"             "employment"         
 ```
 
 A>
@@ -49,29 +54,7 @@ A>
 ```r
 iv_cat = c(iv_cat_none, iv_cat_weak, iv_cat_strong)
 iv_cat = iv_cat[!iv_cat %in% drop_cat]
-print(iv_cat)
-```
-
-A>{linenos=off}
-```
-[1] "marital"          "bankruptcy"       "conviction"       "repossess"        "own_property"    
-[6] "late_repayments"  "market_value_cat"
-```
-
-A>
-```r
 iv_con = c(iv_con_none, iv_con_weak, iv_con_strong)
 iv_con = iv_con[!iv_con %in% drop_con]
-print(iv_con)
-```
-
-A>{linenos=off}
-```
-[1] "market_value"        "credit_applications" "log_debt_to_income"  "log_annual_income"  
-[5] "credit_line_age"    
-```
-
-A>
-```r
 save(upl, iv_cat, iv_con, file=file.path(data_path, "cleaned-05.rda"))
 ```

@@ -37,7 +37,15 @@ drop_cat2 = intersect(intersect(iv_cat_weak, IV_none), iv_non_sig)
 drop_con2 = intersect(intersect(iv_con_weak, IV_none), iv_non_sig)
 drop_cat = c(drop_cat1, drop_cat2)
 drop_con = c(drop_con1, drop_con2)
+```
+
+
+```{r}
 print(drop_cat)
+```
+
+
+```{r}
 print(drop_con)
 ```
 
@@ -46,9 +54,7 @@ We drop these predictors and update data for ensuing analysis.
 ```{r}
 iv_cat = c(iv_cat_none, iv_cat_weak, iv_cat_strong)
 iv_cat = iv_cat[!iv_cat %in% drop_cat]
-print(iv_cat)
 iv_con = c(iv_con_none, iv_con_weak, iv_con_strong)
 iv_con = iv_con[!iv_con %in% drop_con]
-print(iv_con)
 save(upl, iv_cat, iv_con, file=file.path(data_path, "cleaned-05.rda"))
 ```
