@@ -58,8 +58,9 @@ print(iv_sig)
 
 A>{linenos=off}
 ```
- [1] "conviction"          "repossess"           "own_property"        "late_repayments"    
- [5] "market_value_cat"    "marital"             "log_debt_to_income"  "log_annual_income"  
+ [1] "conviction"          "repossess"           "own_property"        
+ [4] "late_repayments"     "market_value_cat"    "marital"             
+ [7] "log_debt_to_income"  "log_annual_income"  
  [9] "credit_line_age"     "credit_applications"
 ```
 
@@ -71,8 +72,8 @@ print(iv_non_sig)
 
 A>{linenos=off}
 ```
-[1] "bankruptcy"          "purpose"             "employment"          "exist_customer"     
-[5] "unspent_convictions" "age"                
+[1] "bankruptcy"          "purpose"             "employment"          
+[4] "exist_customer"      "unspent_convictions" "age"                
 ```
 
 A>
