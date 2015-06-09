@@ -2,7 +2,7 @@
 title: "03-01-model-selection-using-bestsubsets"
 author: "gmlang"
 date: "April 3, 2015"
-output: pdf_document
+output: md_document
 ---
 
 ```{r setup}
@@ -36,7 +36,7 @@ print(predictors)
 
 Next, we build a logit model regressing the target variable against each subset of the predictors. We do that for all subsets of the predictors, and we only use the training dataset. Each model will have an [AIC](http://en.wikipedia.org/wiki/Akaike_information_criterion) value. The one with the smallest AIC will be the best model. This can be easily done using the `glmulti` package.
 
-```{r, cache=TRUE}
+```{r}
 library(glmulti)
 t0 = proc.time() # record starting time
 f = as.formula(paste0("bad ~ ", paste(predictors, collapse=" + ")))
@@ -111,7 +111,6 @@ list_of_fits = lapply(vec_of_models, function(x) {
 })
 result = do.call(rbind, list_of_fits) # collapse to a data frame
 result = result[order(result$AIC),] # sort
-head(result)
 ```
 
 The final best model is
