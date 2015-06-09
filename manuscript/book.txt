@@ -8,3 +8,4 @@
 02-05-preselect-predictors.md
 02-06-correlations.md
 03-predictive-analysis.md
+03-01-model-selection-using-bestsubsets.md
