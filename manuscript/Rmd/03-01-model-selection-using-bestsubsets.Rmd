@@ -124,7 +124,7 @@ Using this formula, we refit the final best model on the training set.
 
 ```{r}
 bestfit = glm(fbest, data=dat_train, family=binomial)
-coef(bestfit)
+round(coef(bestfit), 3)
 ```
 
 You can run `summary(bestfit)` to find out the standard errors and p-values associated with these parameter coefficients.

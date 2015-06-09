@@ -187,40 +187,27 @@ Using this formula, we refit the final best model on the training set.
 A>
 ```r
 bestfit = glm(fbest, data=dat_train, family=binomial)
-coef(bestfit)
+round(coef(bestfit), 3)
 ```
 
-A>{linenos=off}
-```
-                                              (Intercept) 
-                                               20.7806749 
-                                                 marital1 
-                                               -0.1694319 
-                                              bankruptcy1 
-                                               -2.1402012 
-                                        bankruptcyunknown 
-                                               11.4584570 
-                            market_value_cat$1 - $910,600 
-                                               -0.5009762 
-                    market_value_cat$910,601 - $1,290,000 
-                                               10.7874772 
-                  market_value_cat$1,290,001 - $2,680,000 
-                                               30.3147072 
-                                        log_annual_income 
-                                               -2.0574576 
-                                          credit_line_age 
-                                               -0.0050016 
-                            bankruptcy1:log_annual_income 
-                                                0.1326843 
-                      bankruptcyunknown:log_annual_income 
-                                               -0.9153788 
-          market_value_cat$1 - $910,600:log_annual_income 
-                                                0.2534780 
-  market_value_cat$910,601 - $1,290,000:log_annual_income 
-                                               -0.6824139 
-market_value_cat$1,290,001 - $2,680,000:log_annual_income 
-                                               -2.2484841 
-```
+{title = "Table 4: Coefficient Estimates of the Final Best Model", width = "wide"}
+|                                             Predictor   |Coef Est|
+|---------------------------------------------------------|--------|
+|                                              (Intercept)| 20.781 |
+|                                                 marital1| -0.169 |
+|                                              bankruptcy1| -2.140 |
+|                                        bankruptcyunknown| 11.458 |
+|                            market_value_cat$1 - $910,600| -0.501 |
+|                    market_value_cat$910,601 - $1,290,000| 10.787 |
+|                  market_value_cat$1,290,001 - $2,680,000| 30.315 |
+|                                        log_annual_income| -2.057 |
+|                                          credit_line_age| -0.005 |
+|                            bankruptcy1:log_annual_income|  0.133 |
+|                      bankruptcyunknown:log_annual_income| -0.915 |
+|          market_value_cat$1 - $910,600:log_annual_income|  0.253 |
+|  market_value_cat$910,601 - $1,290,000:log_annual_income| -0.682 |
+|market_value_cat$1,290,001 - $2,680,000:log_annual_income| -2.248 |                                          
+|---------------------------------------------------------|--------|
 
 You can run `summary(bestfit)` to find out the standard errors and p-values associated with these parameter coefficients.
 
