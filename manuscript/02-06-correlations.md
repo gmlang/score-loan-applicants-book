@@ -17,14 +17,13 @@ cor(upl[, iv_con])
 ```
 
 {title = "Table 3: Correlations amongst Continuous Predictors", width = "wide"}
-|                    |market_value|credit_applications|log_debt_to_income|log_annual_income|credit_line_age|
-|--------------------|------------|-------------------|------------------|-----------------|---------------|
-|market_value        |     1.00000|    -0.18971       |    -0.30818      |     0.37805     |    0.24162    |
-|credit_applications |    -0.18971|     1.00000       |     0.62245      |    -0.58064     |   -0.65875    |
-|log_debt_to_income  |    -0.30818|     0.62245       |     1.00000      |    -0.80058     |   -0.73884    |
-|log_annual_income   |     0.37805|    -0.58064       |    -0.80058      |     1.00000     |    0.66661    |
-|credit_line_age     |     0.24162|    -0.65875       |    -0.73884      |     0.66661     |    1.00000    |
-|--------------------|------------|-------------------|------------------|-----------------|---------------|                    
+|                    |credit_applications|log_debt_to_income|log_annual_income|credit_line_age|
+|--------------------|-------------------|------------------|-----------------|---------------|
+|credit_applications |     1.00000       |     0.62245      |    -0.58064     |   -0.65875    |
+|log_debt_to_income  |     0.62245       |     1.00000      |    -0.80058     |   -0.73884    |
+|log_annual_income   |    -0.58064       |    -0.80058      |     1.00000     |    0.66661    |
+|credit_line_age     |    -0.65875       |    -0.73884      |     0.66661     |    1.00000    |
+|--------------------|-------------------|------------------|-----------------|---------------|                    
 
 
 The correlation matrix shows the following pairs of predictors are highly correlated:
@@ -109,7 +108,7 @@ for (con_var in iv_con) {
 }
 ```
 
-![](images/con_vs_cat-1.png) ![](images/con_vs_cat-2.png) ![](images/con_vs_cat-3.png) ![](images/con_vs_cat-4.png) ![](images/con_vs_cat-5.png) ![](images/con_vs_cat-6.png) ![](images/con_vs_cat-7.png) ![](images/con_vs_cat-8.png) ![](images/con_vs_cat-9.png) ![](images/con_vs_cat-10.png) ![](images/con_vs_cat-11.png) ![](images/con_vs_cat-12.png) ![](images/con_vs_cat-13.png) ![](images/con_vs_cat-14.png) ![](images/con_vs_cat-15.png) ![](images/con_vs_cat-16.png) ![](images/con_vs_cat-17.png) ![](images/con_vs_cat-18.png) ![](images/con_vs_cat-19.png) ![](images/con_vs_cat-20.png) ![](images/con_vs_cat-21.png) ![](images/con_vs_cat-22.png) ![](images/con_vs_cat-23.png) ![](images/con_vs_cat-24.png) 
+![](images/con_vs_cat-1.png) ![](images/con_vs_cat-2.png) ![](images/con_vs_cat-3.png) ![](images/con_vs_cat-4.png) ![](images/con_vs_cat-5.png) ![](images/con_vs_cat-6.png) ![](images/con_vs_cat-7.png) ![](images/con_vs_cat-8.png) ![](images/con_vs_cat-9.png) ![](images/con_vs_cat-10.png) ![](images/con_vs_cat-11.png) ![](images/con_vs_cat-12.png) ![](images/con_vs_cat-13.png) ![](images/con_vs_cat-14.png) ![](images/con_vs_cat-15.png) ![](images/con_vs_cat-16.png) ![](images/con_vs_cat-17.png) ![](images/con_vs_cat-18.png) 
 
 We see that the following pairs are possibly correlated:
 

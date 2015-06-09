@@ -23,6 +23,7 @@ load(file.path(data_path, 'cleaned-05.rda'))
 ```
 
 It's easy to obtain the correlations amongst the continuous predictors.
+
 ```{r}
 cor(upl[, iv_con])
 ```
