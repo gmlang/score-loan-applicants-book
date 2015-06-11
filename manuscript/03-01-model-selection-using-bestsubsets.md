@@ -179,10 +179,12 @@ fbest
 
 A>{linenos=off}
 ```
-bad ~ marital + bankruptcy + market_value_cat + log_annual_income + credit_line_age + 	  log_annual_income:bankruptcy + log_annual_income:market_value_cat
+bad ~ marital + bankruptcy + market_value_cat + log_annual_income + 
+	  credit_line_age + log_annual_income:bankruptcy +
+	  log_annual_income:market_value_cat
 ```
 
-Using this formula, we refit the final best model on the training set.
+Using this formula, we refit the final best model on the training set and estimate the coefficients of the model parameters.
 
 A>
 ```r
@@ -209,5 +211,5 @@ round(coef(bestfit), 3)
 |market_value_cat$1,290,001 - $2,680,000:log_annual_income| -2.248 |                                          
 |---------------------------------------------------------|--------|
 
-You can run `summary(bestfit)` to find out the standard errors and p-values associated with these parameter coefficients.
+You can run `summary(bestfit)` to get the standard errors and p-values associated with these parameter coefficients.
 
