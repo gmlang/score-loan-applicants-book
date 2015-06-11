@@ -80,6 +80,8 @@ A>{linenos=off}
 
 We see our logit model chosen by the best subsets method beats the benchmark by about 3% in Accuracy.
 
+### True Positive Rate (TPR) or Sensitivity or Recall
+
 Next, we calculate the **True Positive Rate (TPR)**, which is also called **Sensitivity** or **Recall**. It is defined as `TPR = TP / P = TP / (TP + FN)`, so it measures the probability of predicting the loan applicant to be a bad customer, given that the applicant is a bad customer. The bigger the TPR, the better.
 
 A>
@@ -232,6 +234,8 @@ A>{linenos=off}
 [1] "35.73%"
 ```
 
+### False Positive Rate (FPR)
+
 Next, we calculate the **False Positive Rate (FPR)**, defined as `FPR = FP / N = FP / (FP + TN)`. It measures the probability of predicting the applicant to be a bad customer, given that he or she is a good customer. The smaller the FPR, the better. 
 
 A>
@@ -266,7 +270,11 @@ A>{linenos=off}
 [1] "3.73%"
 ```
 
+### Specificity or True Negative Rate (TNR)
+
 It's also common to calculate something called **Specificity** by subtracting FPR from 1. Because `1 - FPR = TN / N`, Specificity is just the **True Negative Rate (TNR)**. It measures the probability of predicting the applicant to be a good customer, given that the applicant is a good customer.
+
+### Precision or Positive Predictive Value
 
 Next, we calculate the **Precision**, defined as `Precision = TP / (TP + FP)`. It's also called **Positive Predictive Value** because it measures how good the model is for detecting the positives (bad customers in our case). The bigger the Precision, the better.
 
@@ -301,6 +309,8 @@ A>{linenos=off}
 ```
 [1] "67.4%"
 ```
+
+### The F-measure
 
 Next, we calculate the **F-measure**, defined as `F = 2 / (1/precision + 1/recall)`.
 
