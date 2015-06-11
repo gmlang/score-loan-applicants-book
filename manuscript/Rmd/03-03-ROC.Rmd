@@ -1,0 +1,176 @@
+---
+title: "03-03-ROC"
+author: "gmlang"
+date: "April 3, 2015"
+output: md_document
+---
+
+```{r setup}
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'png')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+## ROC
+
+In the previous section, we calculated the Accuracy, TPR, FPR, Precision and F-measure 
+
+Varying threshold from 0 to 1 with increment of 0.01. For each threshold value, calculate the test TPR, FPR, Precision and F-measure.
+```{r}
+prob = predict(bestfit, dat_test, type="response")
+range(prob)
+
+cutoffs = seq(0, 1, 0.01)
+vec_tpr = vec_fpr = vec_precision = vec_F = vec_accuracy =  rep(NA, length(cutoffs))
+names(vec_tpr) = names(vec_fpr) = names(vec_precision) = names(vec_F) = 
+        names(vec_accuracy) = cutoffs
+for (threshold in cutoffs) {
+        pred = ifelse(prob > threshold, 1, 0)
+        tbl = mk_tbl(pred, dat_test$bad)
+        vec_tpr[as.character(threshold)] = calc_tpr(tbl)
+        vec_fpr[as.character(threshold)] = calc_fpr(tbl)
+        vec_precision[as.character(threshold)] = calc_precision(tbl)
+        vec_F[as.character(threshold)] = calc_F(tbl)
+        vec_accuracy[as.character(threshold)] = calc_accuracy(tbl)
+}
+
+head(vec_tpr)
+tail(vec_tpr)
+range(vec_tpr)
+
+head(vec_fpr)
+tail(vec_fpr)
+range(vec_fpr)
+
+head(vec_precision)
+tail(vec_precision)
+range(vec_precision, na.rm=T)
+
+head(vec_F)
+tail(vec_F)
+range(vec_F, na.rm=T)
+
+head(vec_accuracy)
+tail(vec_accuracy)
+range(vec_accuracy, na.rm=T)
+```
+
+### The ROC curve has TPR (sensitivity/recall) on the y-axis and FPR (1-specificity/1-TNR) on the x-axis. The closer the curve is to the uper left corner, the better, and this is because we like to have high TPR and low FPR. We now make a ROC curve and calculate the Area Under the Curve (AUC).
+```{r}
+# plot ROC curve
+dat_roc = data.frame(fpr=vec_fpr, tpr=vec_tpr)
+plt = mk_scatterplot(dat_roc)
+p = plt("fpr", "tpr", xlab="False Positive Rate (1 - Specificity)", 
+        ylab="True Positive Rate (Sensitivity/Recall)",
+        pt_size=1.5, pt_alpha=1)
+p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+print(p)
+
+# calculate AUC
+calc_auc = function(fpr, tpr) {
+        names(fpr) = names(tpr) = NULL
+        auc = 0
+        for (i in 2:length(fpr)) # adds up the areas of the trapezoids 
+                auc = auc + 0.5 * (tpr[i] + tpr[i - 1]) * abs(fpr[i] - fpr[i - 1])
+        auc
+}
+
+calc_auc(vec_fpr, vec_tpr)
+```
+
+### Plot Precision vs. Recall (TPR/Sensitivity)
+```{r}
+# plot Precision vs. Recall
+dat_prec_recall = data.frame(precision=vec_precision, recall=vec_tpr)
+plt = mk_scatterplot(dat_prec_recall)
+p = plt("recall", "precision", xlab="Recall (Sensitivity/TPR)", 
+        ylab="Precision", pt_size=1.5, pt_alpha=1)
+p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+print(p)
+```
+
+### Plot Precision, F-measure, Recall (TPR/Sensitivity) and Accuracy vs. FPR (1-specificity). Note Recall vs. FPR is just the ROC curve.
+```{r}
+library(dplyr)
+library(tidyr)
+
+# gather data into data frame for plotting
+dat_plt = data.frame(fpr=vec_fpr, precision=vec_precision, F_measure=vec_F,
+                     tpr=vec_tpr, accuracy=vec_accuracy)
+dat_plt = dat_plt %>% gather(type, val, -fpr)
+
+# plot Precision, F-measure, TPR and accuracy vs. FPR
+plt = mk_scatterplot(dat_plt)
+p = plt("fpr", "val", fillby="type", pt_size=1.5, pt_alpha=1, ylab="", 
+        xlab="False Positive Rate (1 - Specificity)") 
+p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+print(p)
+```
+Because a bad customer is really costly to us, we want to identify as many bad customers as possible. To do that, we need to increase the TPR. At the threshold of 0.5, we have a TPR of `r print_format(calc_tpr(tbl_logit))` and a FPR of `r print_format(calc_fpr(tbl_logit))`. The above plot shows that we can increase the TPR to ~80% by increasing the FPR to ~20%. At the same time, the accuracy won't decrease much and will be still around 80%. In general, we can make this procedure precise by maximizing the TPR over a grid of threshold values. We now do exactly that.
+
+Apply 10-fold Cross Validation on the training set to choose the optimal threshold that leads to ~80% TPR and ~80% Accuracy.
+```{r}
+# create a function that makes folds id for k-fold Cross-Validation.
+get_folds = function(k, dat) sample(rep(1:k, length=nrow(dat)))
+
+set.seed(292303)
+K = 10
+folds = get_folds(K, dat_train)
+
+cutoffs = seq(0, 1, 0.01)
+cv_opt_cutoff = rep(NA, K)
+cv_tpr = rep(NA, K)
+cv_accuracy = rep(NA, K)
+for (i in 1:K) {
+# fit model on K-1 folds and predict on ith fold
+subtrain = dat_train[folds!=i, ]
+subtest  = dat_test[folds==i, ]
+fit = glm(fbest, data=subtrain, family=binomial)
+prob = predict(fit, subtest, type="response")
+
+# find optimal threshold for fold i
+target_tpr = target_accuracy = 0.8
+epsilon = 0.05
+opt_threshold = result_tpr = result_accuracy = c()
+for (threshold in cutoffs) {
+pred = ifelse(prob > threshold, 1, 0)
+tbl = mk_tbl(pred, subtest$bad)
+tpr = calc_tpr(tbl)
+accuracy = calc_accuracy(tbl)
+if (abs(tpr - target_tpr) < epsilon && 
+abs(accuracy - target_accuracy) < epsilon) { 
+result_tpr = c(result_tpr, tpr)
+result_accuracy = c(result_accuracy, accuracy)
+opt_threshold = c(opt_threshold, threshold)
+}
+}
+cv_opt_cutoff[i] = mean(opt_threshold)
+cv_tpr[i] = mean(result_tpr)
+cv_accuracy[i] = mean(result_accuracy)
+}
+
+print(cv_tpr)
+print(cv_accuracy)
+print(cv_opt_cutoff)
+
+# take the average of the optimal cutoffs and use it as the one optimal cv cutoff
+opt_threshold = mean(cv_opt_cutoff)
+print(opt_threshold)
+```
+
+### Using this optimal threshold found by 10-fold CV, re-Calculate the test Accuracy, FPR, TPR, Precision, and F-measure.
+```{r}
+prob = predict(bestfit, dat_test, type="response")
+pred = ifelse(prob > opt_threshold, 1, 0)
+tbl_logit = table(pred, truth = dat_test$bad)
+print_format(calc_fpr(tbl_logit))
+print_format(calc_tpr(tbl_logit))
+print_format(calc_accuracy(tbl_logit))
+print_format(calc_precision(tbl_logit))
+print_format(calc_F(tbl_logit))
+```
+We see that at the threshold value of `r opt_threshold`, we achieve a True Positive Rate of `r print_format(calc_tpr(tbl_logit))` and `r print_format(calc_accuracy(tbl_logit))` at the cost of `r print_format(calc_fpr(tbl_logit))` False Positive Rate.

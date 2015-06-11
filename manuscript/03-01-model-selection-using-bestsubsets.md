@@ -1,6 +1,6 @@
 ## Model Selection Using the Best Subsets Algorithm
 
-First, we load the cleaned data and split it into training and testing subsets. We do this because we'll use the training set for model selection, and we'll use the testing set for backtesting the performance of the chosen model.
+First, we load the cleaned data and split it into training and test subsets. We do this because we'll use the training set for model selection, and we'll use the testing set for backtesting the performance of the chosen model.
 
 A>
 ```r
