@@ -14,7 +14,7 @@ options(width = 100, scipen = 5, digits = 5)
 
 ## Backtesting
 
-How well will the final best model (best in the sense of having the smallest AIC using the training dataset) perform on the test set? To answer this question, we first need to decide on a performance measure. It turns out there're 6 common ones: Accuracy, True Positive Rate (TPR), False Positive Rate (FPR), Specificity, Precision and the F-measure. We'll calculate each of them on the test set. Before we do that, there's a technical detail we need to take care of. Because a logit model outputs probabilities instead of class labels, we need to choose a threshold and determine the class labels by comparing the predicted probabilities with the threshold. A common choice is 0.5. If a predicted probability is greater than 0.5, we'll label the record 1 (bad applicant), 0 (good applicant) otherwise.
+How well will `bestfit` perform on the test set? To answer this question, we first need to decide on a performance measure. It turns out there're 6 common ones: Accuracy, True Positive Rate (TPR), False Positive Rate (FPR), Specificity, Precision and the F-measure. We'll calculate each of them on the test set. Before we do that, there's a technical detail we need to take care of. Because a logit model outputs probabilities instead of class labels, we need to choose a threshold and determine the class labels by comparing the predicted probabilities with the threshold. A common choice is 0.5. If a predicted probability is greater than 0.5, we'll label the applicant 1 (bad customer), and 0 (good customer) otherwise.
 
 ```{r}
 threshold = 0.5
@@ -29,7 +29,7 @@ Now, we can calculate those model performance measures on the test set. Let's de
 * FN = Number of False Negatives
 * N = Number of Negatives = TN + FN
 
-In our case, the word "positive" means "bad customer" since "bad customer" is coded as 1, and "negative" means "good customer" since "good customer" is coded as 0.
+where the word "positive" means "bad customer" in our case since "bad customer" is coded as 1, and "negative" means "good customer" since "good customer" is coded as 0.
 
 First, we calculate the **Accuracy** of our chosen logit model, defined as `Accuracy = (TP + TN) / (P + N)`. It measures the overall percent of correct classifications. 
 
