@@ -48,22 +48,24 @@ We can look at the CV results.
 
 A>
 ```r
-print(cv_tpr)
+print_format(cv_tpr)
 ```
 
 A>{linenos=off}
 ```
- [1] 0.75439 0.81696 0.82353 0.78571 0.79365 0.79545 0.78889 0.79032 0.78205 0.78857
+ [1] "75.44%" "81.7%"  "82.35%" "78.57%" "79.37%" 
+ [6] "79.55%" "78.89%" "79.03%" "78.21%" "78.86%"
 ```
 
 A>
 ```r
-print(cv_accuracy)
+print_format(cv_accuracy)
 ```
 
 A>{linenos=off}
 ```
- [1] 0.76389 0.78821 0.83874 0.75658 0.81379 0.75887 0.77562 0.82076 0.76423 0.78799
+ [1] "76.39%" "78.82%" "83.87%" "75.66%" "81.38%" 
+ [6] "75.89%" "77.56%" "82.08%" "76.42%" "78.8%" 
 ```
 
 Note that each fold has an optimal CV cutoff. 
@@ -75,7 +77,8 @@ print(cv_opt_cutoff)
 
 A>{linenos=off}
 ```
- [1] 0.220 0.205 0.255 0.150 0.210 0.180 0.225 0.230 0.200 0.190
+ [1] 0.220 0.205 0.255 0.150 0.210 
+ [6] 0.180 0.225 0.230 0.200 0.190
 ```
 
 We'll take the average of these optimal CV cutoffs as the optimal threshold.

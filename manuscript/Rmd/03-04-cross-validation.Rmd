@@ -60,8 +60,8 @@ for (i in 1:K) {
 We can look at the CV results.
 
 ```{r}
-print(cv_tpr)
-print(cv_accuracy)
+print_format(cv_tpr)
+print_format(cv_accuracy)
 ```
 
 Note that each fold has an optimal CV cutoff. 
