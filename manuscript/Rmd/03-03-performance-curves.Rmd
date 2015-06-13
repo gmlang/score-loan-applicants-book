@@ -8,7 +8,7 @@ output: md_document
 ```{r setup}
 library(knitr)
 opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
-               echo = TRUE, fig.width = 6, fig.height = 6, dev = 'png')
+               echo = TRUE, fig.width = 8, fig.height = 6, dev = 'png')
 options(width = 100, scipen = 5, digits = 5)
 ```
 
