@@ -10,3 +10,4 @@
 03-predictive-analysis.md
 03-01-model-selection-using-bestsubsets.md
 03-02-backtesting.md
+03-03-performance-curves.md
