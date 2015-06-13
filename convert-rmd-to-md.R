@@ -37,3 +37,6 @@ knitr::knit(file_in)
 
 file_in = file.path(rmd_path, "03-03-performance-curves.Rmd")
 knitr::knit(file_in)
+
+file_in = file.path(rmd_path, "03-04-cross-validation.Rmd")
+knitr::knit(file_in)

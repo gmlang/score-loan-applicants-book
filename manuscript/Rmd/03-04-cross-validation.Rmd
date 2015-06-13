@@ -1,0 +1,93 @@
+---
+title: "03-04-cross-validation"
+author: "gmlang"
+date: "April 3, 2015"
+output: md_document
+---
+
+```{r setup}
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 8, fig.height = 6, dev = 'png')
+options(width = 100, scipen = 5, digits = 5)
+```
+
+## Cross Validation
+
+We use the method of 10-fold Cross Validation on the training set to choose the threshold that leads to ~80% TPR and ~80% Accuracy.
+
+```{r}
+# define a function that outputs ids for each of the k folds.
+get_folds = function(k, dat) sample(rep(1:k, length=nrow(dat)))
+# set seed
+set.seed(292303)
+K = 10 # number of folds
+folds = get_folds(K, dat_train) # get ids for each of the K folds.
+# initialization
+cutoffs = seq(0, 1, 0.01)
+cv_opt_cutoff = rep(NA, K)
+cv_tpr = rep(NA, K)
+cv_accuracy = rep(NA, K)
+# run 10-fold Cross Validation
+for (i in 1:K) {
+        # fit model using K-i folds and predict on the ith fold
+        subtrain = dat_train[folds!=i, ]
+        subtest  = dat_test[folds==i, ]
+        fit = glm(fbest, data=subtrain, family=binomial)
+        prob = predict(fit, subtest, type="response")
+        # find optimal threshold for fold i
+        target_tpr = target_accuracy = 0.8
+        epsilon = 0.05
+        opt_threshold = result_tpr = result_accuracy = c()
+        for (threshold in cutoffs) {
+                pred = ifelse(prob > threshold, 1, 0)
+                tbl = mk_tbl(pred, subtest$bad)
+                tpr = calc_tpr(tbl)
+                accuracy = calc_accuracy(tbl)
+                if (abs(tpr - target_tpr) < epsilon && 
+                            abs(accuracy - target_accuracy) < epsilon) { 
+                        result_tpr = c(result_tpr, tpr)
+                        result_accuracy = c(result_accuracy, accuracy)
+                        opt_threshold = c(opt_threshold, threshold)
+                }
+        }
+        cv_opt_cutoff[i] = mean(opt_threshold)
+        cv_tpr[i] = mean(result_tpr)
+        cv_accuracy[i] = mean(result_accuracy)
+}
+```
+
+We can look at the CV results.
+
+```{r}
+print(cv_tpr)
+print(cv_accuracy)
+```
+
+Note that each fold has an optimal CV cutoff. 
+
+```{r}
+print(cv_opt_cutoff)
+```
+
+We'll take the average of these optimal CV cutoffs as the optimal threshold.
+
+```{r}
+opt_threshold = mean(cv_opt_cutoff)
+print(opt_threshold)
+```
+
+Using this optimal threshold, we can re-calculate the Accuracy, TPR, FPR, Precision, and F-measure on the test set.
+
+```{r}
+prob = predict(bestfit, dat_test, type="response")
+pred = ifelse(prob > opt_threshold, 1, 0)
+tbl_logit = table(pred, truth = dat_test$bad)
+data.frame(Accuracy = print_format(calc_accuracy(tbl_logit)),
+           TPR = print_format(calc_tpr(tbl_logit)),
+           FPR = print_format(calc_fpr(tbl_logit)),
+           Precision = print_format(calc_precision(tbl_logit)),
+           F = print_format(calc_F(tbl_logit)))
+```
+
+We see that at the threshold value of `r opt_threshold`, we achieve a True Positive Rate of `r print_format(calc_tpr(tbl_logit))` and an Accuracy of `r print_format(calc_accuracy(tbl_logit))` at the cost of a `r print_format(calc_fpr(tbl_logit))` False Positive Rate. This says that out of 100 good customers, we can expect the model to correctly identify `r round(1 - calc_fpr(tbl_logit), 2) * 100` of them. And out of 100 bad customers, we can expect the model to erroneously identify `r round(1 - calc_tpr(tbl_logit), 2) * 100` of them. What's the impact on our profit and loss if we are to use this model to score loan applicants? Recall that the loss caused by a bad customer is 5 times the profit we make from a good customer. Suppose the profit per good customer is $1, then the expected profit we'll make using the model is `r round(1 - calc_fpr(tbl_logit), 3)` * $1 = $`r round(1 - calc_fpr(tbl_logit), 3)`, and the expected loss we'll suffer is `r round(1 - calc_tpr(tbl_logit), 3)` * $5 = $`r round(1 - calc_tpr(tbl_logit), 3) * 5`. Suppose the percent of bad customers in the population is Pb, we can then expect the profit/loss to be `0.787(1 – Pb) - 1.06Pb = 0.787 - 1.847Pb`. Now our sample has 18% bad customers. Suppose 18% is a good estimate of Pb, plug it in and we get $`r round(0.787 - 1.847 * 0.18, 2)`, which is not bad.

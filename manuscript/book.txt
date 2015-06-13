@@ -11,3 +11,4 @@
 03-01-model-selection-using-bestsubsets.md
 03-02-backtesting.md
 03-03-performance-curves.md
+03-04-cross-validation.md
