@@ -12,3 +12,4 @@
 03-02-backtesting.md
 03-03-performance-curves.md
 03-04-cross-validation.md
+03-05-final-model.md
