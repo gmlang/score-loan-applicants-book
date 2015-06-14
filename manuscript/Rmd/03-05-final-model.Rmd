@@ -1,0 +1,47 @@
+---
+title: "03-05-final-model"
+author: "gmlang"
+date: "April 3, 2015"
+output: md_document
+---
+
+```{r setup}
+library(knitr)
+opts_chunk$set(comment = "", warning = FALSE, message = FALSE, tidy = FALSE,
+               echo = TRUE, fig.width = 8, fig.height = 6, dev = 'png')
+options(width = 100, scipen = 999, digits = 5)
+```
+
+## Final Model
+
+To obtain a final model for use in production, we take the best model formula found by the best subsets method, `r print(fbest)`, and fit a logit model using the whole data set available to us. When in production, we just send new data as input to the model, and the model will output predicted probabilities indicating the likelihood of a bad customer. We'll use `r opt_threshold`, the optimal threshold discovered by 10-fold Cross Validation to make classifications in that if the predicted probability is greater than `r opt_threshold`, we'll classify the applicant as "bad"; otherwise, we'll classify it as "good".
+
+```{r}
+finalfit = glm(fbest, data=upl, family=binomial)
+round(coef(finalfit), 3)
+```
+
+To see if this model makes sense, we need to look at the Odds Ratios (OR), which are listed in the following table. 
+
+```{r}
+odds_ratio = exp(coef(finalfit)[-1])
+round(odds_ratio, 3)
+```
+
+The odds of becoming a bad customer for an applicant who's married is `r format_as_pct(1-odds_ratio[1], 3)` lower than someone who's single. This makes sense because married people on average tend to have more stable jobs and higher income, hence they are more likely to make loan payments on time.
+
+The odds of becoming a bad customer for an applicant who has declared bankruptcy is `r round(odds_ratio[2] - 1, 1)` times higher than someone who's solvant. Our model strongly echos common sense here. Be wary when lending money to people who's bankrupted. When an applicant doesn't tell us his or her bankruptcy info, we should try our best to find out because the odds of becoming a bad customer for someone with bankruptcy info missing is still `r round(odds_ratio[3] - 1, 1)` higher than someone who's solvant. A possible explanation is that these people are in the process of filing bankruptcy or they are experiencing financial distress, otherwise, they wouldn't need to hide this piece of information.
+
+The odds of becoming a bad customer for an applicant who owns property with market value of below $910,600 is `r format_as_pct(1 - odds_ratio[4], 3)` lower than someone without any property. However, as market value increases, the odds of becoming a bad customer increases dramatically. This also makes a lot of sense. People who don't own any property are less affluent on average, and hence it's more likely for them to miss payments. People with properties that worth a lot of money tend to have more debt obligations and more expensive life style on average. As a result, it's very easy for them to miss a payment or two if they don't manage their cash flow carefully.  
+
+If the annual income of an applicant increase by `r round(exp(1),1)-1` times, while keeping all other predictors fixed, we expect to see a `r format_as_pct(1 - odds_ratio[7], 3)` drop in the odds of being a bad customer. This `r format_as_pct(1 - odds_ratio[7], 3)` decrease does not depend on the value that annual income is held at. This makes sense because the more income a person makes, the eaiser it is for him to make on time payments. Plus, people with higher incomes tend to be financially savy and will likely try to avoid any damage to their credit scores by making timely payments.
+
+Finally, for a 1-month increase in the age of longest credit line, while keeping the other predictors fixed, we expect to see a `r format_as_pct(1 - odds_ratio[8], 3)` drop in the odds of being a bad customer. This translates to an annual decrease of `r format_as_pct(12*(1 - odds_ratio[8]), 3)`.
+
+We've interpreted the main effects above. Now, it's your turn to interpret the interaction effects along with the main effects. Do this as an exercise to see if you really understand the logit model. To understand more about odds ratios, you can check out this [website](http://www.ats.ucla.edu/stat/mult_pkg/faq/general/odds_ratio.htm).
+
+This completes the book. Hope you enjoyed reading. If you have questions, please email me at news@MasterR.org.
+
+Have a great day!
+Guangming Lang
+Founder and Chief Data Scientist at [Cabaceo](www.cabaceo.com) and [MasterR.org](http://masterr.org)

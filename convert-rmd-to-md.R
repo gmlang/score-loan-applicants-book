@@ -40,3 +40,6 @@ knitr::knit(file_in)
 
 file_in = file.path(rmd_path, "03-04-cross-validation.Rmd")
 knitr::knit(file_in)
+
+file_in = file.path(rmd_path, "03-05-final-model.Rmd")
+knitr::knit(file_in)
