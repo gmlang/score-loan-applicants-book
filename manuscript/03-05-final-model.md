@@ -66,9 +66,3 @@ If the annual income of an applicant increase by 1.7 times, while keeping all ot
 Finally, for a 1-month increase in the age of longest credit line, while keeping the other predictors fixed, we expect to see a 0.4% drop in the odds of being a bad customer. This translates to an annual decrease of 4.5%.
 
 We've interpreted the main effects above. Now, it's your turn to interpret the interaction effects along with the main effects. Do this as an exercise to see if you really understand the logit model. To understand more about odds ratios, you can check out this [website](http://www.ats.ucla.edu/stat/mult_pkg/faq/general/odds_ratio.htm).
-
-This completes the book. Hope you enjoyed reading. If you have questions, please email me at news@MasterR.org.
-
-Have a great day!
-Guangming Lang
-Founder and Chief Data Scientist at [Cabaceo](www.cabaceo.com) and [MasterR.org](http://masterr.org)
