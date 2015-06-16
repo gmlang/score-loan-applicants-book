@@ -1,5 +1,7 @@
 preface.md
 00-intro.md
+01-set-up.md
+02-preliminary-analysis.md
 03-predictive-analysis.md
 03-03-performance-curves.md
 conclusion.md
