@@ -57,12 +57,26 @@ round(odds_ratio, 3)
 
 The odds of becoming a bad customer for an applicant who's married is 17.3% lower than someone who's single. This makes sense because married people on average tend to have more stable jobs and higher income, hence they are more likely to make loan payments on time.
 
+| |
+
 The odds of becoming a bad customer for an applicant who has declared bankruptcy is 94.8 times higher than someone who's solvant. Our model strongly echos common sense here. Be wary when lending money to people who's bankrupted. When an applicant doesn't tell us his or her bankruptcy info, we should try our best to find out because the odds of becoming a bad customer for someone with bankruptcy info missing is still 58.6 higher than someone who's solvant. A possible explanation is that these people are in the process of filing bankruptcy or they are experiencing financial distress, otherwise, they wouldn't need to hide this piece of information.
+
+| |
+
 
 The odds of becoming a bad customer for an applicant who owns property with market value of below $910,600 is 89.6% lower than someone without any property. However, as market value increases, the odds of becoming a bad customer increases dramatically. This also makes a lot of sense. People who don't own any property are less affluent on average, and hence it's more likely for them to miss payments. People with properties that worth a lot of money tend to have more debt obligations and more expensive life style on average. As a result, it's very easy for them to miss a payment or two if they don't manage their cash flow carefully.  
 
+| |
+
+
 If the annual income of an applicant increase by 1.7 times, while keeping all other predictors fixed, we expect to see a 90.5% drop in the odds of being a bad customer. This 90.5% decrease does not depend on the value that annual income is held at. This makes sense because the more income a person makes, the eaiser it is for him to make on time payments. Plus, people with higher incomes tend to be financially savy and will likely try to avoid any damage to their credit scores by making timely payments.
 
+| |
+
+
 Finally, for a 1-month increase in the age of longest credit line, while keeping the other predictors fixed, we expect to see a 0.4% drop in the odds of being a bad customer. This translates to an annual decrease of 4.5%.
+
+| |
+
 
 We've interpreted the main effects above. Now, it's your turn to interpret the interaction effects along with the main effects. Do this as an exercise to see if you really understand the logit model. To understand more about odds ratios, you can check out this [website](http://www.ats.ucla.edu/stat/mult_pkg/faq/general/odds_ratio.htm).
