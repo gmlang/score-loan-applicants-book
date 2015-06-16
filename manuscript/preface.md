@@ -1,8 +1,6 @@
 # Preface
 
-This book will teach you how to do data analysis and machine learning in R. It does that by showing you the entire process through a case study step by step. 
-
-You will learn
+This book will teach you how to do data analysis and machine learning in R. It does that by showing you the entire process through a case study step by step. You will learn
 
 * how to clean data 
 * how to do descriptive and exploratory analysis 
