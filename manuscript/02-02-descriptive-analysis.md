@@ -57,7 +57,7 @@ for (var in iv_cat) {
                 main=paste("Percent of bad customers in", var),
                 barlab="pct_bad", barlab_at_top=T, barlab_use_pct=T, 
                 barlab_size=4)
-        p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
+        p = scale_axis(p, "y", scale="pct", pct_max=0.5, pct_jump=0.05)
         print(p)
 }
 ```
@@ -81,7 +81,7 @@ plt = mk_boxplot(upl)
 for (var in iv_con) {
         p = plt("bad", var, xlab="0 - Good, 1 - Bad", ylab=var, 
                 main = paste("Distribution of", var), legend=F)
-        p = scale_axis(p, "y", use_comma=T)
+        p = scale_axis(p, "y", scale="comma")
         print(p)
 }
 ```
@@ -150,7 +150,7 @@ plt = mk_barplot(tbl)
 p = plt(var, "pct_bad", fillby=var, xlab=var, legend=F,
         main=paste("Percent of bad customers in", var), barlab="pct_bad",
         barlab_at_top=T, barlab_use_pct=T, barlab_size=4)
-p = scale_axis(p, "y", use_pct=TRUE, pct_max=0.5, pct_jump=0.05)
+p = scale_axis(p, "y", scale="pct", pct_max=0.5, pct_jump=0.05)
 p = rotate_axis_text(p, 15)
 print(p)
 ```

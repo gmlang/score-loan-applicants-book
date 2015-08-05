@@ -34,8 +34,8 @@ plt = mk_scatterplot(dat_roc)
 p = plt("fpr", "tpr", xlab="False Positive Rate (1 - Specificity)", 
         ylab="True Positive Rate (Sensitivity/Recall)",
         pt_size=1.5, pt_alpha=1)
-p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
-p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "x", scale="pct", pct_jump=0.1)
+p = scale_axis(p, "y", scale="pct", pct_jump=0.1)
 print(p)
 ```
 
@@ -73,8 +73,8 @@ dat_prec_recall = data.frame(precision=vec_precision, recall=vec_tpr)
 plt = mk_scatterplot(dat_prec_recall)
 p = plt("recall", "precision", xlab="Recall (Sensitivity/TPR)", 
         ylab="Precision", pt_size=1.5, pt_alpha=1)
-p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
-p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "x", scale="pct", pct_jump=0.1)
+p = scale_axis(p, "y", scale="pct", pct_jump=0.1)
 print(p)
 ```
 
@@ -96,8 +96,8 @@ dat_plt = dat_plt %>% gather(type, val, -fpr)
 plt = mk_scatterplot(dat_plt)
 p = plt("fpr", "val", fillby="type", pt_size=1.5, pt_alpha=1, ylab="", 
         xlab="False Positive Rate (1 - Specificity)") 
-p = scale_axis(p, "x", use_pct=T, pct_jump=0.1)
-p = scale_axis(p, "y", use_pct=T, pct_jump=0.1)
+p = scale_axis(p, "x", scale="pct", pct_jump=0.1)
+p = scale_axis(p, "y", scale="pct", pct_jump=0.1)
 print(p)
 ```
 

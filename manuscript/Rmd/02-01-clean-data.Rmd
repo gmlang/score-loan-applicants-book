@@ -67,7 +67,7 @@ plt = mk_barplot(tbl)
 p = plt("bad", "percent", fillby="bad", xlab="0 - Good, 1 - Bad", legend=F,
         main = "Proportion of Good and Bad Customers", barlab="percent",
         barlab_at_top=T, barlab_use_pct=T, barlab_size=4)
-p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
+p = scale_axis(p, "y", scale="pct", pct_jump=0.2)
 print(p)
 ```
 
@@ -117,7 +117,7 @@ for (var in varsNA) {
         p = plt("bad", "percent", fillby="bad", xlab="0 - Good, 1 - Bad", 
                 main = title, legend=F, barlab="percent", barlab_at_top=T,
                 barlab_use_pct=T, barlab_size=4)
-        p = scale_axis(p, "y", use_pct=T, pct_jump=0.2)
+        p = scale_axis(p, "y", scale="pct", pct_jump=0.2)
         print(p)
 }
 ```
