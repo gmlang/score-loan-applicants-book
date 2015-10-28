@@ -32,7 +32,7 @@ cv_accuracy = rep(NA, K)
 for (i in 1:K) {
         # fit model using K-i folds and predict on the ith fold
         subtrain = dat_train[folds!=i, ]
-        subtest  = dat_test[folds==i, ]
+        subtest  = dat_train[folds==i, ]
         fit = glm(fbest, data=subtrain, family=binomial)
         prob = predict(fit, subtest, type="response")
         # find optimal threshold for fold i

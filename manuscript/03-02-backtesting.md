@@ -11,10 +11,10 @@ Now, we can calculate those model performance measures on the test set. Let's de
 
 * TP = Number of True Positives
 * FP = Number of False Positives
-* P = Number of Positives = TP + FP
+* P = Number of Positives = TP + FN
 * TN = Number of True Negatives
 * FN = Number of False Negatives
-* N = Number of Negatives = TN + FN
+* N = Number of Negatives = TN + FP
 
 where the word "positive" means "bad customer" in our case since "bad customer" is coded as 1, and "negative" means "good customer" since "good customer" is coded as 0.
 
