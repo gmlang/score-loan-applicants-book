@@ -68,14 +68,12 @@ An AUC of `r round(calc_auc(vec_fpr, vec_tpr), 3)` is pretty high, and this give
 
 ### The Precision-Recall Plot
 
-We can also plot the Precisions vs. the Recalls.
-
-```{r, prec_vs_recall, fig.path='images/', fig.cap=""}
+```{r}
 dat_prec_recall = data.frame(precision=vec_precision, recall=vec_tpr)
 # plot Precision vs. Recall
 plt = mk_scatterplot(dat_prec_recall)
 p = plt("recall", "precision", xlab="Recall (Sensitivity/TPR)", 
-        ylab="Precision", pt_size=1.5, pt_alpha=1)
+        ylab="Precision (Positive Predictive Value)", pt_size=1.5, pt_alpha=1)
 p = scale_axis(p, "x", scale="pct", pct_jump=0.1)
 p = scale_axis(p, "y", scale="pct", pct_jump=0.1)
 print(p)
